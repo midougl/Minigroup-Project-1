@@ -7,9 +7,15 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include "randomFile.h"
+
 #define buffer_size 1024
 
 int main() {
+    //used to test randomFile.h
+    char *file = randomInputFile();
+
+
 
     //make string with big enough size for buffering and messages
     char server_mssg[buffer_size];
