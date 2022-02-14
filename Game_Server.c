@@ -12,9 +12,10 @@
 #define buffer_size 1024
 
 int main() {
-    //used to test randomFile.h
+    /**used to test randomFile.h
     char *file = randomInputFile();
-
+    printf("%s", file);
+    **/
 
 
     //make string with big enough size for buffering and messages
