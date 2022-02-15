@@ -17,7 +17,6 @@ int main() {
     printf("%s", file);
     **/
 
-
     //make string with big enough size for buffering and messages
     char server_mssg[buffer_size];
 
@@ -88,16 +87,17 @@ int main() {
         if ((child_pid = fork()) == 0) {
         close(game_socket);
 
+        //******************************************** Server should be connected with child at this point**************************************
+        //******************************************** Posix message passing below here            **************************************
         while (1) {
             recv(client_socket, server_mssg, buffer_size, 0);
-            if(strcmp(server_mssg, "disconnect") == 0) {
+            if(strcmp(server_mssg, "dc") == 0) {
                 printf("Disconnected from the server\n");
                 break;
             }
             else {
                 printf("Client message - %s\n", server_mssg);
                 send(client_socket, server_mssg, strlen(server_mssg), 0);
-                bzero(server_mssg, buffer_size);
             }
         }
     }
