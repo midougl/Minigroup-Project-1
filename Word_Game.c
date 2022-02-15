@@ -110,11 +110,36 @@ bool availableLetters(char *userInput, char *playText){
 }
 
 
-bool endOfWord(char *userInput, char *newInput){
-    for(int i=-1; i<strlen(userInput); i--)
-        if(tolower(userInput[i]) == tolower(newInput[i])){
-        printf("hi");
+bool endOfWord(char *userInput, char *newInput){  // ill clean this up later
+    int j =0;
+    char one[10];
+    char two[20];
+    int count = 0;
+    char hold[1];
+    char hold2[1];
+    bool end = false;
+
+    int lentgh = strlen(userInput);
+    for(int i=0; i<strlen(userInput); i++){
+        if(end) return true;
+        j--;
+        hold2[0] = userInput[strlen(userInput)+j];
+        one[i] = userInput[strlen(userInput)+j];
+        two[i] = (newInput[i]);
+        hold[0] = two[0];
+        count ++;
+        if(hold[0] == hold2[0]) {
+        printf("here");
+            for(int k =0; k<count; k++){
+                end = true;
+                if(two[k]!= one[count-k-1]){
+                    return false;
+                }
+            }
         }
+
+    }
+    return false;
 
 }
 
