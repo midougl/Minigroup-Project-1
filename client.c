@@ -12,32 +12,46 @@
 int main() {
 
     int sock;
-    struct sockaddress_in address;
+    struct sockaddr_in address;
     socklen_t address_size;
     char buffer[buffer_size];
     int n;
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if(sock < 0){
-        printf("socket is less than 0");
+        printf("socket is less than 0\n");
     }
-    printf("Client socket created");
+    printf("Client socket created\n");
 
     memset(&address, '\0', sizeof(address));
     address.sin_family = AF_INET;
     address.sin_port = htons(5998);
-    address.sin_addr.s_addr = inet_addr("127.0.01");
+    address.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-    connect(sock, (struct sockaddress*)&address, sizeof(address));
-    printf("Successfully connected to server");
+    connect(sock, (struct sockaddr*)&address, sizeof(address));
+    printf("Successfully connected to server\n");
 
-    bzero(buffer, buffer_size);
-    send(sock, buffer, strlen(buffer), 0);
+    //while loop running when connected to server
+    while(1) {
+        bzero(buffer, buffer_size);
+        printf("******************MAIN MENU*****************\n");
+        printf("1) Single player\n");
+        printf("2) Multiplayer\n");
+        printf("3) Exit\n");
+        
+        scanf("%s", buffer);
+        send(sock, buffer, strlen(buffer), 0);
 
-    recv(sock, buffer, sizeof(buffer), 0);
+        recv(sock, buffer, sizeof(buffer), 0);
 
-    close(sock);
-    printf("disconnected from server");
+        if(strcmp(buffer, "dc") == 0) {
+            printf("disconnected from server\n");
+            close(sock);
+            break;
+        }
+
+        printf("%s", buffer);
+    }
 
     return 0;
 }
