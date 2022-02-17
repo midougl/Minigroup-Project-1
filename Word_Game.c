@@ -1,3 +1,22 @@
+/**
+ * Group A
+ * Brian Beach / Samuel Fipps
+ * 2/16/22
+ * 
+ * Word_Game.c  Description:
+ * Brian - made a game that took input file x (randomly generated from randomFile.h) and has the player create a word from those letters
+ * The game then determines if the word is valid (checks if only given letters were used). If so, adds score and goes to next part where player
+ * needs to make the word from the ending of the previously used word. Goes until the player messes up
+ * 
+ * Samuel - turned parts of the game into seperate functions (availableLetters, endOfWord) so that the game can be changed up when we create
+ * a single_player and multi_player options. Added score.h to be able to keep correct scoring system.
+ * 
+ * Still things needed to be done -ex: create array to keep previously used words, turn word_game into two seperate games for single player and 
+ * multi player
+ **/
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -142,4 +161,3 @@ bool endOfWord(char *userInput, char *newInput){  // ill clean this up later
     return false;
 
 }
-
