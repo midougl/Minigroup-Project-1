@@ -1,11 +1,26 @@
+/**
+ * Group A
+ * Brian Beach
+ * 2/16/22
+ * Game_Server Description:
+ * Created a game server that should be able to connect to multiple clients (on the same machine I believe).  Used tcp/ip form 
+ * where used socket/bind/listen/accept where socket creates a socket, bind beinds a socket to a given address information like port and ip,
+ * listen will listen for clients and then if a client shows up to be connect, it is accepted. If accepted, checks to see if child process was
+ * made with fork and will create a seperate response to the every child 
+ * 
+ * Need to change to posix message passing instead of send/rcv between client and server, but used that for now just to see if it works
+ * Also need to actually add the game's once the posix message passing is added
+ *
+**/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 
 #include "randomFile.h"
 
@@ -21,7 +36,7 @@ int main() {
     char server_mssg[buffer_size];
 
     //make child_pid for fork
-    pid_t child_pid;
+    int child_Created;
 
     //create the socket
     int game_socket;
@@ -49,19 +64,22 @@ int main() {
     if (binded < 0) {
         printf("Socket is NOT BINDED \n");
     }
+
     else {
             printf("Socket binded \n");
     }
 
 
     //listen for connections
-    listen(game_socket, 1);
+    int listener;
+    listener = listen(game_socket, 1);
 
-    if (listen(game_socket, 1) == 0) {
+    //check for listening errors
+    if (listener == 0) {
         printf("Listening for client...\n");
     }
     else {
-        printf("Error while listening\n");      //check for listening errors
+        printf("Error while listening\n");      
     }
 
 
@@ -71,6 +89,7 @@ int main() {
     socklen_t client_address_size;          //<-- used for the accept function
 
 
+    //while loop to use to connect to client(s)
     while (1) {
         //accept client
         client_socket = accept(game_socket, (struct sockaddr*)&client_address, &client_address_size);  //<-- check this one when using fork
@@ -83,12 +102,13 @@ int main() {
             exit(1);
         }
 
-        //fork child pid to get multiple clients
-        if ((child_pid = fork()) == 0) {
+        //fork child and see if it creates a child
+        child_Created = fork();
+        if (child_Created == 0) {
         close(game_socket);
 
         //******************************************** Server should be connected with child at this point**************************************
-        //******************************************** Posix message passing below here            **************************************
+        //******************************************** Posix message passing belown here            **************************************
         while (1) {
             recv(client_socket, server_mssg, buffer_size, 0);
             if(strcmp(server_mssg, "dc") == 0) {
