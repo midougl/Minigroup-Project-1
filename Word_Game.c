@@ -33,7 +33,7 @@ int main() {
     if(menuOp==1){
         gameCheckers();    // starts game
     }
-    if(menuOp==2){
+    if(menuOp==2){ // for multiplayer
         printf("not setup yet");
     }
 
@@ -65,7 +65,7 @@ void getWordFromTxt(){
     fclose(inputFile);
 }
 
-void randCharPicker(){  // pick ranndom char at start of the game and random player
+void randCharPicker(){  // pick random char at start of the game and random player
     int ranChar =0;
     char charHolder;
     int lengthOfWord =0;
@@ -74,7 +74,7 @@ void randCharPicker(){  // pick ranndom char at start of the game and random pla
     srand(time(0));
     lengthOfWord = strlen(userInput);
     ranChar = (rand() % lengthOfWord-1) ;//random cahr
-    charHolder = userInput[ranChar];
+    charHolder = userInput[ranChar];//////////////////////////////////////bugggged degubbger says it gives it the char but wont print it
     ranChar = (rand() % 2)+1 ; // random player
     playerTacker = ranChar;
     printf("starting player is %d \n", playerTacker);
