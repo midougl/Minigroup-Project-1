@@ -41,8 +41,8 @@ int main() {
     bool cont = true;
     int lengthOfWord =0;
     bool foundInDic = false;
-    //******************************************** Might turn this into it's own function? *************************************************
-    //11111111111111111111111111111111111111111111111 Gets first word from user 1111111111111111111111111111111111111111111111111111111111111
+
+
     //used to read input file
     FILE* inputFile;
     int playTextLength = 255;
@@ -62,41 +62,36 @@ int main() {
     printf("Make a word from %s\n", playText);
     char userInput[32];
     scanf("%s", userInput);
-     //1111111111111111111111111111111111111111111111111111111111111 end of  Gets first word from user 1111111111111111111111111111111111111111111111111111111111111
 
-    while (cont){ //////////////////////////////////main game loop//////////////////////////////////////////////////
-
-    //2222222222222222222222222222222222222222222--makes sure the users input is in the the word--22222222222222222222222222222222222222222222222222222
+    // main game loop
+    while (cont){ // main game loop
     cont = availableLetters(userInput, playText);
-    //222222222222222222222222222222222222222222--end of makes sure the users input is in the the word--22222222222222222222222222222222222222222222222222222
-
-    //333333333333333333333333333333333333333333--end of checks if userInput is in dictionary.txt--3333333333333333333333333333333333333333333333333333333333333
-    if (dictionary(userInput) == 0) {    //checks if userInput is in dictionary.txt
+    //checks if userInput is in dictionary.txt
+    if (dictionary(userInput) == 0) {
         printf("%s is not accepted in the given dictionary\n", userInput);
-        printf("Game Over\n", userInput);
+        printf("Make a word from %s\n", playText);
         cont = false;
         foundInDic = true;
         break;
     }
-    //33333333333333333333333333333333333333333333333--end of checks if userInput is in dictionary.txt--3333333333333333333333333333333333333333333333333333333333333333333333
 
-    // 444444444444444444444444444444444444444444444--Score stuff--4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444
+    //score stuff
     lengthOfWord = strlen(userInput);
     Calcscore(lengthOfWord , foundInDic);
     foundInDic = false;
-// 44444444444444444444444444444444444444444444444444--End of Score stuff--44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444
 
-    // 5555555555555555555555555555555555555555555555--continuing off the ending of the previous word--555555555555555555555555555555555555555555555555555555555555555
-        printf("Make a word using the ending character(s) of %s\n", userInput);
-        char newInput[32];
-        scanf("%s", newInput);
-        if(strlen(newInput)<3){
-            printf("word to small needs to be atleast 3 chars");
-            break;
-        }
-        endOfWord(userInput, newInput);
-        strcpy(userInput, newInput);
-    // 55555555555555555555555555555555555555555555555--end of  continuing off the ending of the previous word--55555555555555555555555555555555555555555555555555555555555
+
+        //continuing off the ending of the previous word
+    printf("Make a word using the ending character(s) of %s\n", userInput);
+    char newInput[32];
+    scanf("%s", newInput);
+    if(strlen(newInput)<3){
+        printf("word to small needs to be atleast 3 chars");
+        break;
+    }
+    //makes sure its the end of the previous word
+    cont = endOfWord(userInput, newInput);
+    strcpy(userInput, newInput);
     }
 
 }
@@ -104,7 +99,7 @@ int main() {
 
 bool availableLetters(char *userInput, char *playText){
     bool cont = true;
-    int score=0;
+    //int score=0;
     int check;
 
     for (int i = 0; i < strlen(userInput); ++i) {
@@ -116,7 +111,7 @@ bool availableLetters(char *userInput, char *playText){
         }
         if (check == 0) {
             printf("Word does not count because you used %c which is not in the list of letters\n", userInput[i]);
-            score = 0;
+            //score = 0;
             cont = false;
             break;
             }
@@ -138,7 +133,7 @@ bool endOfWord(char *userInput, char *newInput){  // ill clean this up later
     char hold2[1];
     bool end = false;
 
-    int lentgh = strlen(userInput);
+   // int lentgh = strlen(userInput);
     for(int i=0; i<strlen(userInput); i++){
         if(end) return true;
         j--;
@@ -161,3 +156,35 @@ bool endOfWord(char *userInput, char *newInput){  // ill clean this up later
     return false;
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
