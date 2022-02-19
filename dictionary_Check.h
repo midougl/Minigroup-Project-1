@@ -4,13 +4,14 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-
+bool foundInDic = false;
 int dictionary(char* userInput) {
     FILE* file;
     int buffer = strlen(userInput)+1;
     char dictionaryWord[buffer];
     char wordCheck[buffer];
     int boolean = 0;
+    boolean =0;
 
     strcpy(wordCheck, userInput);
 
