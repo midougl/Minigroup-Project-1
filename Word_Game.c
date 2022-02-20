@@ -14,7 +14,8 @@ void gameCheckers();
 void getWordFromTxt();
 void menu();
 void randCharPicker();
-void passCheck();
+bool passCheck();
+bool randCharPassChecker();
 
 
 char userInput[32];
@@ -27,6 +28,7 @@ int menuOp;
 char startingChar;
 int twoPasses =0;
 int bothPassCount=0;
+char charHolder;
 
 int main() {
 
@@ -44,8 +46,9 @@ int main() {
 
 void randCharPicker(){  // pick random char at start of the game and random player
     int ranChar =0;
-    char charHolder;
     int lengthOfWord =0;
+    bool pass = false;
+
     //char test[32];
     bool one = true;
     srand(time(0));
@@ -54,20 +57,72 @@ void randCharPicker(){  // pick random char at start of the game and random play
     charHolder = userInput[ranChar];
     ranChar = (rand() % 2)+1 ; // random player
     playerTacker = ranChar;
+
+
+
     printf("starting player is %d \n", playerTacker);
     printf("Make a word from %c\n", charHolder);
 
     //starting the game here
     //printf("Make a word from %c\n", charHolder);
+    one = true;
     while(one){
+
         scanf("%s", newInput);
-        one = availableLetters();   // makes sure letter user inputed are in the word
-        if(one) check_dict();   //checks if userInput is in dictionary.txt
+        printf("\n");
+
+
+        pass = randCharPassChecker();
+        if(!pass){
+            twoPasses =0;
+            one = availableLetters();   // makes sure letter user inputed are in the word
+            if(one) check_dict();   //checks if userInput is in dictionary.txt
+        }
     }
     strcpy(userInput, newInput);   //sets up for next round
     lengthOfWord = strlen(userInput);  //score
     Calcscore(lengthOfWord , foundInDic);
     foundInDic = false;
+
+
+}
+
+bool randCharPassChecker(){
+    int count = 0;
+    char pass[4]= {'p','a','s','s'};
+    for(int i=0; i <4; i++){// for passing
+        if(newInput[i]==pass[i]){
+            count++;
+            if(count==4){
+                printf("passing to other player\n");
+                i = 10;
+                twoPasses++;
+
+
+            if(twoPasses==2){
+                bothPassCount++;
+                twoPasses =0;
+            }
+
+            if(bothPassCount ==2){
+                printf("game over both players pasted two times");
+                exit(0);
+            }
+
+            if(playerTacker==1)playerTacker=2;
+            else playerTacker=1;
+            printf("It is now player %d turn\n", playerTacker);
+            //printf("Make a word from %s\n", userInput);
+            printf("Make a word from %c\n", charHolder);
+
+
+
+            return true;
+        }
+        }
+    }
+    return false;
+
 }
 
 void gameCheckers(){
@@ -75,11 +130,13 @@ void gameCheckers(){
     bool one = true;
     bool two = true;
     bool three = true;
+    bool twopass = false;
 
     printf("Your set of alphabets is %s\n", userInput);
     randCharPicker(); //starts game
 
     while(cont){
+        twopass==false;
 
         if(playerTacker==1)playerTacker=2;
         else playerTacker=1;
@@ -87,10 +144,15 @@ void gameCheckers(){
 
         printf("Make a word from %s\n", userInput);
         scanf("%s", newInput);
+        printf("\n");
 
-        passCheck();// player pass handler
 
-        if(twoPasses==0){//if no one passes
+        twopass = passCheck();// player pass handler
+
+        if(twopass==false){
+
+        if(twoPasses<2){//if no one passes
+
             two = check_dict();             //checks if userInput is in dictionary.txt
             if(two) three = endOfWord();        //makes sure its the end of the previous word
 
@@ -99,13 +161,17 @@ void gameCheckers(){
                 lengthOfWord = strlen(userInput);  //score
                 Calcscore(lengthOfWord , foundInDic);
                 foundInDic = false;
+                bothPassCount=0;
+                twoPasses =0;
 
             }
+        }
         }
         else if (twoPasses!=1){
             bothPassCount=0;
             twoPasses =0;
         }
+
     }
 }
 
@@ -144,26 +210,30 @@ bool check_dict(){
 return false;
 }
 
-void passCheck(){
-
+bool passCheck(){
+    int count = 0;
     char pass[4]= {'p','a','s','s'};
     for(int i=0; i <4; i++){// for passing
         if(newInput[i]==pass[i]){
-            printf("passing to other player\n");
-            i = 10;
-            twoPasses++;
+            count++;
+            if(count ==4){
+                printf("passing to other player\n");
+                i = 10;
+                twoPasses++;
+
+                if(twoPasses==2){// if both players pass
+                    printf("both players have passed reseting\n");
+                    bothPassCount++;
+                    twoPasses=0;
+                    randCharPicker();
+                    return true;
+                }
+                return true;
+            }
         }
     }
 
-    if(twoPasses==2){// if both players pass
-        printf("both players have passed reseting\n");
-        bothPassCount++;
-        randCharPicker();
-    }
-    if(bothPassCount==2){
-        printf("Game over both players passed 2 times with consequently");
-
-    }
+    return false;
 }
 
 bool endOfWord(){
@@ -172,6 +242,7 @@ bool endOfWord(){
     bool sameWord = false;
     count = 0;
     sameWord=false;
+
 
     for(int i=0; i<strlen(userInput); i++){
         if(newInput[i]== userInput[i] ){
@@ -185,19 +256,23 @@ bool endOfWord(){
     }
 
     if(sameWord==false){
+
         for(int i=0; i < strlen(userInput); i++){
             word1[i] = userInput[strlen(userInput)-i-1];
             count =0;
-            for(int j=0; j<strlen(userInput)+1; j++){
+            for(int j=0; j<strlen(userInput)-1; j++){
                 if( (word1[  i-j ])   ==  (newInput[j]) ){
                     count++;
                 }
                 if(count == i+1){
+
                     return true;
+
                 }
             }
         }
     }
+    printf("word didnt start with ending of last\n");
 return false;
 }
 
