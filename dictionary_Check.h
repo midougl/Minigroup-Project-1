@@ -3,8 +3,10 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include "main.h"
 
-bool foundInDic = false;
+
+
 int dictionary(char* userInput) {
     FILE* file;
     int buffer = strlen(userInput)+1;
@@ -20,6 +22,7 @@ int dictionary(char* userInput) {
     while (fgets(dictionaryWord, buffer, file) != NULL){
         if (strcmp(wordCheck, dictionaryWord)==0) {
             boolean = 1;
+            foundInDic= true;
             break;
         }
     }
