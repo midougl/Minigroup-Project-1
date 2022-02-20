@@ -12,12 +12,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
+#include "main.h"
 
 char* randomInputFile() {
 
     int fileNum;
-    int i;
+    //int i;
     char temp[32];
     char* fileName = malloc(32);
 
@@ -36,7 +36,7 @@ char* randomInputFile() {
     strcpy(fileName, temp);
 
     return fileName;
-    
+
 }
 
 
