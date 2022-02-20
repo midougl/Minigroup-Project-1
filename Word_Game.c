@@ -7,15 +7,15 @@
 #include "dictionary_Check.h"
 #include "score.h"
 
-bool availableLetters();
+bool availableLettersChecker();
 bool endOfWord();
 bool check_dict();
-void gameCheckers();
+void MainGameLoop();
 void getWordFromTxt();
 void menu();
-void randCharPicker();
+void randAlphabetPicker();
 bool passCheck();
-bool randCharPassChecker();
+bool PassCheckerForRandalph();
 
 
 char userInput[32];
@@ -32,12 +32,15 @@ int bothPassCount=0;
 char charHolder;
 
 int main() {
+    // calls menu function
+    menu();
 
-    menu();  // calls menu function
-    getWordFromTxt();  //gets word from txt file
+    //gets word from txt file
+    getWordFromTxt();
 
     if(menuOp==1){
-        gameCheckers();    // starts game
+        // starts game
+        MainGameLoop();
     }
     if(menuOp==2){ // for multiplayer
         printf("not setup yet");
@@ -45,7 +48,7 @@ int main() {
 
 }
 
-void randCharPicker(){  // pick random char at start of the game and random player
+void randAlphabetPicker(){  // pick random char at start of the game and random player
     int ranChar =0;
     int lengthOfWord =0;
     bool pass = false;
@@ -53,72 +56,54 @@ void randCharPicker(){  // pick random char at start of the game and random play
 
     srand(time(0));
     lengthOfWord = strlen(userInput);
-    ranChar = (rand() % (lengthOfWord-2)) ;//random cahr
+
+    //random alph
+    ranChar = (rand() % (lengthOfWord-2)) ;
     charHolder = alphabets[ranChar];
-    ranChar = (rand() % 2)+1 ; // random player
+
+    // random player
+    ranChar = (rand() % 2)+1 ;
     playerTacker = ranChar;
 
     printf("starting player is %d \n", playerTacker);
     printf("Make a word from %c\n", charHolder);
 
+    //Changes userInput to alphabets holder
     for(int i=0; i<strlen(alphabets);i++){
         userInput[i]=alphabets[i];
     }
 
-    //starting the game here
+    //starting first word here
     while(one){
 
         scanf("%s", newInput);
         printf("\n");
-        pass = randCharPassChecker();
+
+        // checks if the input was "pass'
+        pass = PassCheckerForRandalph();
 
         if(!pass){
             twoPasses =0;
-            one = availableLetters();   // makes sure letter user inputed are in the word
-            if(one) check_dict();   //checks if userInput is in dictionary.txt
+
+            // makes sure letter user inputed are in the word
+            one = availableLettersChecker();
+            //checks if userInput is in dictionary.txt
+            if(one) check_dict();
         }
     }
 
-    strcpy(userInput, newInput);   //sets up for next round
-    lengthOfWord = strlen(userInput);  //score
+     //sets up for next round
+    strcpy(userInput, newInput);
+
+    //score stuff
+    lengthOfWord = strlen(userInput);
     Calcscore(lengthOfWord , foundInDic);
     foundInDic = false;
 }
 
-bool randCharPassChecker(){
-    int count = 0;
-    char pass[4]= {'p','a','s','s'};
 
-    for(int i=0; i <4; i++){// for passing
-        if(newInput[i]==pass[i]){
-            count++;
-            if(count==4){
-                printf("passing to other player\n");
-                i = 10;
-                twoPasses++;
 
-            if(twoPasses==2){
-                bothPassCount++;
-                twoPasses =0;
-            }
-
-            if(bothPassCount ==2){
-                printf("game over both players pasted two times");
-                exit(0);
-            }
-
-            if(playerTacker==1)playerTacker=2;
-            else playerTacker=1;
-            printf("It is now player %d turn\n", playerTacker);
-            printf("Make a word from %c\n", charHolder);
-            return true;
-            }
-        }
-    }
-    return false;
-}
-
-void gameCheckers(){
+void MainGameLoop(){
     bool cont = true;
     bool one = true;
     bool two = true;
@@ -126,10 +111,11 @@ void gameCheckers(){
     bool twopass = false;
 
     printf("Your set of alphabets is %s\n", userInput);
-    randCharPicker(); //starts game
+    randAlphabetPicker(); //starts game
 
     while(cont){
 
+        //changes whos turn it is
         if(playerTacker==1)playerTacker=2;
         else playerTacker=1;
 
@@ -138,18 +124,26 @@ void gameCheckers(){
         scanf("%s", newInput);
         printf("\n");
 
-        twopass = passCheck();// player pass handler
+        // checks if the input was "pass'
+        twopass = passCheck();
 
+        // checks for two passes in a row becuase if there are then you need to pick another random alph
         if(twopass==false){
 
-            if(twoPasses<2){//if no one passes
+            //if no one passes
+            if(twoPasses<2){
 
-                two = check_dict();             //checks if userInput is in dictionary.txt
-                if(two) three = endOfWord();        //makes sure its the end of the previous word
+                two = check_dict();              //checks if userInput is in dictionary.txt
+                if(two) three = endOfWord();    //makes sure its the end of the previous word
 
-                if(one && two && three){//if both are true
-                    strcpy(userInput, newInput);   //sets up for next round
-                    lengthOfWord = strlen(userInput);  //score
+                 //if both previous statments are true
+                if(one && two && three){
+
+                    //sets up for next round
+                    strcpy(userInput, newInput);
+
+                     //score stuff
+                    lengthOfWord = strlen(userInput);
                     Calcscore(lengthOfWord , foundInDic);
                     foundInDic = false;
                     bothPassCount=0;
@@ -167,8 +161,8 @@ void gameCheckers(){
 }
 
 
-
-bool availableLetters(){
+//functions for making sure the letters used are in the given chars
+bool availableLettersChecker(){
     int check=0;
 
     for (int j = 0; j < strlen(userInput); ++j) {
@@ -188,6 +182,7 @@ bool availableLetters(){
 return true;
 }
 
+// checks if word is in dict
 bool check_dict(){
     if (dictionary(newInput) == 0) {
         printf("%s is not accepted in the given dictionary\n", newInput);
@@ -199,6 +194,7 @@ bool check_dict(){
 return false;
 }
 
+// checks for passing in main loop
 bool passCheck(){
     int count = 0;
     char pass[4]= {'p','a','s','s'};
@@ -214,7 +210,7 @@ bool passCheck(){
                     printf("both players have passed reseting\n");
                     bothPassCount++;
                     twoPasses=0;
-                    randCharPicker();
+                    randAlphabetPicker();
                     return true;
                 }
                 return true;
@@ -225,6 +221,7 @@ bool passCheck(){
     return false;
 }
 
+//check if the user input starts with the ending of preivous input
 bool endOfWord(){
     int count = 0;
     char word1[100];
@@ -263,7 +260,7 @@ return false;
 }
 
 
-
+// menu display function
 void menu(){
     printf("\n1.    Single Player Mode\n");
     printf("2.    Multi-Player Mode\n");
@@ -279,7 +276,7 @@ void menu(){
     }
 }
 
-
+//gets aphlabet from txt
 void getWordFromTxt(){
     //gets random input file in form "input_xx.txt"
     char *file = randomInputFile();
@@ -294,4 +291,38 @@ void getWordFromTxt(){
     }
 
     fclose(inputFile);
+}
+
+//pass checker for rand alph.    this one is different becuase it has to check for 4 passes to end game
+bool PassCheckerForRandalph(){
+    int count = 0;
+    char pass[4]= {'p','a','s','s'};
+
+    for(int i=0; i <4; i++){// for passing
+        if(newInput[i]==pass[i]){
+            count++;
+            if(count==4){
+                printf("passing to other player\n");
+                i = 10;
+                twoPasses++;
+
+            if(twoPasses==2){
+                bothPassCount++;
+                twoPasses =0;
+            }
+
+            if(bothPassCount ==2){
+                printf("game over both players pasted two times");
+                exit(0);
+            }
+
+            if(playerTacker==1)playerTacker=2;
+            else playerTacker=1;
+            printf("It is now player %d turn\n", playerTacker);
+            printf("Make a word from %c\n", charHolder);
+            return true;
+            }
+        }
+    }
+    return false;
 }
