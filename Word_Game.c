@@ -19,6 +19,7 @@ bool randCharPassChecker();
 
 
 char userInput[32];
+char alphabets[32];
 int playTextLength = 255;
 char playText[255];
 char newInput[32];
@@ -53,12 +54,16 @@ void randCharPicker(){  // pick random char at start of the game and random play
     srand(time(0));
     lengthOfWord = strlen(userInput);
     ranChar = (rand() % (lengthOfWord-2)) ;//random cahr
-    charHolder = userInput[ranChar];
+    charHolder = alphabets[ranChar];
     ranChar = (rand() % 2)+1 ; // random player
     playerTacker = ranChar;
 
     printf("starting player is %d \n", playerTacker);
     printf("Make a word from %c\n", charHolder);
+
+    for(int i=0; i<strlen(alphabets);i++){
+        userInput[i]=alphabets[i];
+    }
 
     //starting the game here
     while(one){
@@ -283,5 +288,10 @@ void getWordFromTxt(){
 
     //gets word to play from input file and inputs it into playText
     fgets(userInput, playTextLength, inputFile);
+
+    for(int i=0; i<strlen(userInput); i++){
+        alphabets[i]=userInput[i];
+    }
+
     fclose(inputFile);
 }
