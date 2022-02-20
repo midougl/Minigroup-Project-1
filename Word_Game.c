@@ -6,6 +6,7 @@
 #include "randomFile.h"
 #include "dictionary_Check.h"
 #include "score.h"
+#include "main.h"
 
 bool availableLettersChecker();
 bool endOfWord();
@@ -18,18 +19,6 @@ bool passCheck();
 bool PassCheckerForRandalph();
 
 
-char userInput[32];
-char alphabets[32];
-int playTextLength = 255;
-char playText[255];
-char newInput[32];
-FILE* inputFile;
-int lengthOfWord =0;
-int menuOp;
-char startingChar;
-int twoPasses =0;
-int bothPassCount=0;
-char charHolder;
 
 int main() {
     // calls menu function
@@ -52,7 +41,7 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
     int ranChar =0;
     int lengthOfWord =0;
     bool pass = false;
-    bool one = true;
+    bool one = false;
 
     srand(time(0));
     lengthOfWord = strlen(userInput);
@@ -74,7 +63,7 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
     }
 
     //starting first word here
-    while(one){
+    while(!one){
 
         scanf("%s", newInput);
         printf("\n");
@@ -87,6 +76,7 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
 
             // makes sure letter user inputed are in the word
             one = availableLettersChecker();
+
             //checks if userInput is in dictionary.txt
             if(one) check_dict();
         }
@@ -97,7 +87,7 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
 
     //score stuff
     lengthOfWord = strlen(userInput);
-    Calcscore(lengthOfWord , foundInDic);
+    Calcscore(lengthOfWord);
     foundInDic = false;
 }
 
@@ -144,7 +134,7 @@ void MainGameLoop(){
 
                      //score stuff
                     lengthOfWord = strlen(userInput);
-                    Calcscore(lengthOfWord , foundInDic);
+                    Calcscore(lengthOfWord);
                     foundInDic = false;
                     bothPassCount=0;
                     twoPasses =0;
@@ -172,18 +162,18 @@ bool availableLettersChecker(){
     }
     if (check == 0) {
         printf("Word does not count because you used '%c' which is not in the list of letters\n", newInput[0]);
-        return true;
+        return false;
         }
     else {
-        return false;
+        return true;
 
     }
-
-return true;
+return false;
 }
 
 // checks if word is in dict
 bool check_dict(){
+
     if (dictionary(newInput) == 0) {
         printf("%s is not accepted in the given dictionary\n", newInput);
     }
