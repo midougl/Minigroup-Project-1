@@ -1,12 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
+#include "main.h"
 #include "randomFile.h"
 #include "dictionary_Check.h"
 #include "score.h"
-#include "main.h"
+
 
 bool availableLettersChecker();
 bool endOfWord();
