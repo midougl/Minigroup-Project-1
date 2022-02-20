@@ -14,6 +14,7 @@ void gameCheckers();
 void getWordFromTxt();
 void menu();
 void randCharPicker();
+void passCheck();
 
 
 char userInput[32];
@@ -24,6 +25,8 @@ FILE* inputFile;
 int lengthOfWord =0;
 int menuOp;
 char startingChar;
+int twoPasses =0;
+int bothPassCount=0;
 
 int main() {
 
@@ -39,32 +42,6 @@ int main() {
 
 }
 
-void menu(){
-    printf("\n1.    Single Player Mode\n");
-    printf("2.    Multi-Player Mode\n");
-    printf("3.    Exit\n \n");
-    scanf("%d", &menuOp);
-
-    if(menuOp == 1) printf("Starting Single Player Mode\n \n");
-    if(menuOp == 2) printf("Starting Multi-Player Mode\n \n");
-    if(menuOp == 3) printf("Exiting");
-
-    if(menuOp==3){
-        exit(0);
-    }
-}
-
-void getWordFromTxt(){
-    //gets random input file in form "input_xx.txt"
-    char *file = randomInputFile();
-    printf("Using game file: %s\n", file);
-    inputFile = fopen(file, "r");
-
-    //gets word to play from input file and inputs it into playText
-    fgets(userInput, playTextLength, inputFile);
-    fclose(inputFile);
-}
-
 void randCharPicker(){  // pick random char at start of the game and random player
     int ranChar =0;
     char charHolder;
@@ -73,14 +50,15 @@ void randCharPicker(){  // pick random char at start of the game and random play
     bool one = true;
     srand(time(0));
     lengthOfWord = strlen(userInput);
-    ranChar = (rand() % lengthOfWord-1) ;//random cahr
-    charHolder = userInput[ranChar];//////////////////////////////////////bugggged degubbger says it gives it the char but wont print it
+    ranChar = (rand() % (lengthOfWord-2)) ;//random cahr
+    charHolder = userInput[ranChar];
     ranChar = (rand() % 2)+1 ; // random player
     playerTacker = ranChar;
     printf("starting player is %d \n", playerTacker);
+    printf("Make a word from %c\n", charHolder);
 
     //starting the game here
-    printf("Make a word from %c\n", charHolder);
+    //printf("Make a word from %c\n", charHolder);
     while(one){
         scanf("%s", newInput);
         one = availableLetters();   // makes sure letter user inputed are in the word
@@ -97,8 +75,6 @@ void gameCheckers(){
     bool one = true;
     bool two = true;
     bool three = true;
-    int twoPasses =0;
-    char pass[4]= {'p','a','s','s'};
 
     printf("Your set of alphabets is %s\n", userInput);
     randCharPicker(); //starts game
@@ -112,47 +88,28 @@ void gameCheckers(){
         printf("Make a word from %s\n", userInput);
         scanf("%s", newInput);
 
-        for(int i=0; i <4; i++){// for passing
-            if(newInput[i]==pass[i])
-            printf("passing to other player\n");
-            i = 10;
-            twoPasses++;
-        }
-
-        if(twoPasses==2){// if both players pass
-            printf("both players have passed reseting\n");
-            randCharPicker();
-        }
+        passCheck();// player pass handler
 
         if(twoPasses==0){//if no one passes
-
             two = check_dict();             //checks if userInput is in dictionary.txt
             if(two) three = endOfWord();        //makes sure its the end of the previous word
 
-
-            if(one && two && three){
+            if(one && two && three){//if both are true
                 strcpy(userInput, newInput);   //sets up for next round
-
                 lengthOfWord = strlen(userInput);  //score
                 Calcscore(lengthOfWord , foundInDic);
                 foundInDic = false;
 
             }
         }
-        else if (twoPasses!=1)twoPasses =0;
+        else if (twoPasses!=1){
+            bothPassCount=0;
+            twoPasses =0;
+        }
     }
 }
 
-bool check_dict(){
-    if (dictionary(newInput) == 0) {
-        printf("%s is not accepted in the given dictionary\n", newInput);
-    }
-    else{
-        foundInDic = true;
-        return true;
-    }
-return false;
-}
+
 
 bool availableLetters(){
     int check;
@@ -174,6 +131,39 @@ bool availableLetters(){
     }
 
 return true;
+}
+
+bool check_dict(){
+    if (dictionary(newInput) == 0) {
+        printf("%s is not accepted in the given dictionary\n", newInput);
+    }
+    else{
+        foundInDic = true;
+        return true;
+    }
+return false;
+}
+
+void passCheck(){
+
+    char pass[4]= {'p','a','s','s'};
+    for(int i=0; i <4; i++){// for passing
+        if(newInput[i]==pass[i]){
+            printf("passing to other player\n");
+            i = 10;
+            twoPasses++;
+        }
+    }
+
+    if(twoPasses==2){// if both players pass
+        printf("both players have passed reseting\n");
+        bothPassCount++;
+        randCharPicker();
+    }
+    if(bothPassCount==2){
+        printf("Game over both players passed 2 times with consequently");
+
+    }
 }
 
 bool endOfWord(){
@@ -213,12 +203,34 @@ return false;
 
 
 
+void menu(){
+    printf("\n1.    Single Player Mode\n");
+    printf("2.    Multi-Player Mode\n");
+    printf("3.    Exit\n \n");
+    scanf("%d", &menuOp);
+
+    if(menuOp == 1) printf("Starting Single Player Mode\n \n");
+    if(menuOp == 2) printf("Starting Multi-Player Mode\n \n");
+    if(menuOp == 3) printf("Exiting");
+
+    if(menuOp==3){
+        exit(0);
+    }
+}
 
 
 
 
+void getWordFromTxt(){
+    //gets random input file in form "input_xx.txt"
+    char *file = randomInputFile();
+    printf("Using game file: %s\n", file);
+    inputFile = fopen(file, "r");
 
-
+    //gets word to play from input file and inputs it into playText
+    fgets(userInput, playTextLength, inputFile);
+    fclose(inputFile);
+}
 
 
 
