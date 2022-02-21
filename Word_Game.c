@@ -13,7 +13,11 @@ void menu();
 void randAlphabetPicker();
 bool passCheck();
 bool PassCheckerForRandalph();
+bool wordInTextFileCheck();
+bool checkIfWordUsed();
 
+char usedWords[1000][30];
+int wordCount=0;
 
 
 int main() {
@@ -38,6 +42,7 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
     int lengthOfWord =0;
     bool pass = false;
     bool one = false;
+    bool two = false;
 
     srand(time(0));
     lengthOfWord = strlen(userInput);
@@ -70,8 +75,9 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
         if(!pass){
             twoPasses =0;
 
+            two = checkIfWordUsed();
             // makes sure letter user inputed are in the word
-            one = availableLettersChecker();
+            if(!two) one = availableLettersChecker();
 
             //checks if userInput is in dictionary.txt
             if(one) check_dict();
@@ -91,7 +97,7 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
 
 void MainGameLoop(){
     bool cont = true;
-    bool one = true;
+    bool one = false;
     bool two = true;
     bool three = true;
     bool twopass = false;
@@ -119,11 +125,12 @@ void MainGameLoop(){
             //if no one passes
             if(twoPasses<2){
 
-                two = check_dict();              //checks if userInput is in dictionary.txt
+                one = checkIfWordUsed();
+                if(!one)two = check_dict();              //checks if userInput is in dictionary.txt
                 if(two) three = endOfWord();    //makes sure its the end of the previous word
 
                  //if both previous statments are true
-                if(one && two && three){
+                if(!one && two && three){
 
                     //sets up for next round
                     strcpy(userInput, newInput);
@@ -145,8 +152,27 @@ void MainGameLoop(){
 
     }
 }
+//add to used words
+bool checkIfWordUsed(){
+    int len =0;
+
+    len = sizeof(usedWords)/sizeof(usedWords[0]);
+
+    for(int i =0; i<len; i++){
+        if(!strcmp(usedWords[i], newInput)){
+            printf("This word has been used\n");
+            score[playerTacker] = score[playerTacker] -2;
+            printf("Minus 2 points\n");
+            return true;
+        }
+    }
+
+    strcpy(usedWords[wordCount],newInput);
+    wordCount++;
+    return false;
 
 
+}
 //functions for making sure the letters used are in the given chars
 bool availableLettersChecker(){
     int check=0;
@@ -158,6 +184,8 @@ bool availableLettersChecker(){
     }
     if (check == 0) {
         printf("Word does not count because you used '%c' which is not in the list of letters\n", newInput[0]);
+        printf("Penalized 1 point");
+        score[playerTacker] = score[playerTacker] -1;
         return false;
         }
     else {
@@ -169,15 +197,63 @@ return false;
 
 // checks if word is in dict
 bool check_dict(){
+    bool contToDict=false;
+    foundInDic = false;
 
-    if (dictionary(newInput) == 0) {
-        printf("%s is not accepted in the given dictionary\n", newInput);
+    contToDict = wordInTextFileCheck();
+
+    if(contToDict){
+        if (dictionary(newInput) == 0) {
+            printf("%s is not accepted in the given dictionary\n", newInput);
+            printf("Penalized 1 point\n");
+            score[playerTacker] = score[playerTacker] -1;
+        }
+        else{
+            foundInDic = true;
+            return true;
+        }
     }
-    else{
-        foundInDic = true;
+
+
+    if(!contToDict){
         return true;
     }
-return false;
+
+   return false;
+
+}
+//checks if there word is already in the text file
+bool wordInTextFileCheck(){
+    //bool foundPossWords = false;
+    char possWordLineCheck[15] = {'P','o','s','s','i','b','l','e',' ','W','o','r','d','s',':'};
+    char check[32];
+    int count=0;
+
+    inputFile = fopen(file, "r");
+    while(fgets(check, playTextLength, inputFile)){
+        count=0;
+        for(int i=0; i < strlen(check); i++){
+            if(check[i] == possWordLineCheck[i] ){
+                count++;
+            }
+        }
+        if(count==15){
+            break;
+        }
+    }
+
+    while(fgets(check, playTextLength, inputFile)){
+
+        for(int i=0; i<strlen(check);i++){
+            if(check[i]== possWordLineCheck[i]){
+                //printf("found in txt file");
+                return false;
+            }
+        }
+    }
+
+      fclose(inputFile);
+      return true;
 }
 
 // checks for passing in main loop
@@ -221,6 +297,8 @@ bool endOfWord(){
 
     if(count == strlen(userInput)){
         printf("You can't use the same word\n");
+        printf("Penalized 1 point\n");
+        score[playerTacker] = score[playerTacker] -1;
         sameWord = true;
     }
 
@@ -242,6 +320,8 @@ bool endOfWord(){
         }
     }
     printf("word didnt start with ending of last\n");
+    printf("Penalized 1 point\n");
+    score[playerTacker] = score[playerTacker] -1;
 return false;
 }
 
@@ -265,7 +345,7 @@ void menu(){
 //gets aphlabet from txt
 void getWordFromTxt(){
     //gets random input file in form "input_xx.txt"
-    char *file = randomInputFile();
+    file = randomInputFile();
     printf("Using game file: %s\n", file);
     inputFile = fopen(file, "r");
 
