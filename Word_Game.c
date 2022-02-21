@@ -17,7 +17,7 @@ bool wordInTextFileCheck();
 bool checkIfWordUsed();
 void addWordTotxt();
 
-char usedWords[1000][30];
+char usedWords[500][30];
 int wordCount=0;
 
 
@@ -128,6 +128,8 @@ void MainGameLoop(){
             //if no one passes
             if(twoPasses<2){
                 one = checkIfWordUsed();
+
+printf("hi");
                 if(!one)two = check_dict();              //checks if userInput is in dictionary.txt
 
                 if(two) three = endOfWord();    //makes sure its the end of the previous word
@@ -255,15 +257,19 @@ bool wordInTextFileCheck(){
     }
 
     while(fgets(check, playTextLength, inputFile)){
-
+        count=0;
         for(int i=0; i<strlen(check);i++){
-            if(check[i]== possWordLineCheck[i]){
-                //printf("found in txt file");
+            if(check[i]== newInput[i]){
+                count++;
+            }
+            if(count==strlen(newInput)){//found in txt file
                 fclose(inputFile);
                 return false;
             }
         }
     }
+
+
 
       fclose(inputFile);
       return true;
@@ -368,7 +374,6 @@ void getWordFromTxt(){
     for(int i=0; i<strlen(userInput); i++){
         alphabets[i]=userInput[i];
     }
-
     fclose(inputFile);
 }
 
