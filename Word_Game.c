@@ -15,6 +15,7 @@ bool passCheck();
 bool PassCheckerForRandalph();
 bool wordInTextFileCheck();
 bool checkIfWordUsed();
+void addWordTotxt();
 
 char usedWords[1000][30];
 int wordCount=0;
@@ -43,6 +44,7 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
     bool pass = false;
     bool one = false;
     bool two = false;
+    bool three = false;
 
     srand(time(0));
     lengthOfWord = strlen(userInput);
@@ -80,7 +82,8 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
             if(!two) one = availableLettersChecker();
 
             //checks if userInput is in dictionary.txt
-            if(one) check_dict();
+            if(one) three = check_dict();
+            if(!three) one = false;
         }
     }
 
@@ -124,9 +127,9 @@ void MainGameLoop(){
 
             //if no one passes
             if(twoPasses<2){
-
                 one = checkIfWordUsed();
                 if(!one)two = check_dict();              //checks if userInput is in dictionary.txt
+
                 if(two) three = endOfWord();    //makes sure its the end of the previous word
 
                  //if both previous statments are true
@@ -207,9 +210,12 @@ bool check_dict(){
             printf("%s is not accepted in the given dictionary\n", newInput);
             printf("Penalized 1 point\n");
             score[playerTacker] = score[playerTacker] -1;
+            return false;
+
         }
         else{
             foundInDic = true;
+            addWordTotxt();
             return true;
         }
     }
@@ -221,6 +227,12 @@ bool check_dict(){
 
    return false;
 
+}
+
+void addWordTotxt(){
+    inputFile = fopen(file, "a");
+    fprintf(inputFile, "%s\n", newInput);
+    fclose(inputFile);
 }
 //checks if there word is already in the text file
 bool wordInTextFileCheck(){
@@ -247,6 +259,7 @@ bool wordInTextFileCheck(){
         for(int i=0; i<strlen(check);i++){
             if(check[i]== possWordLineCheck[i]){
                 //printf("found in txt file");
+                fclose(inputFile);
                 return false;
             }
         }
