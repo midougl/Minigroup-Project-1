@@ -7,7 +7,6 @@
  * Used to get the input.txt file for the game. Made into a .h file so the game can call it when it begins.
  * 
  **/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,3 +47,4 @@ int main() {
     printf("%s", file);
 }
 **/
+
