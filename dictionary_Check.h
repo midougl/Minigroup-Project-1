@@ -4,6 +4,9 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include "main.h"
+#include <time.h>
+#include <unistd.h>
+
 
 
 
@@ -12,22 +15,43 @@ int dictionary(char* userInput) {
     int buffer = strlen(userInput)+1;
     char dictionaryWord[buffer];
     char wordCheck[buffer];
-    int boolean = 0;
-    boolean =0;
+    int dictCount =0;
+
 
     strcpy(wordCheck, userInput);
 
     file = fopen("dictionary.txt", "r");
 
+    sleep(1);
+
     while (fgets(dictionaryWord, buffer, file) != NULL){
-        if (strcmp(wordCheck, dictionaryWord)==0) {
-            boolean = 1;
+    dictCount=0;
+        for(int i=0; i<strlen(wordCheck); i++){
+            if(wordCheck[i]==dictionaryWord[i]){
+                dictCount++;
+            }
+
+        }
+        if(dictCount== strlen(wordCheck)){
             foundInDic= true;
-            break;
+            fclose(file);
+            return true;
         }
     }
 
+
+
+
+  /*
+        if (strcmp(wordCheck, dictionaryWord)==0) {
+            boolean = 1;
+            foundInDic= true;
+            return true;
+        }
+    }
+    */
+
     fclose(file);
-    return boolean;
+    return false;
 
 }
