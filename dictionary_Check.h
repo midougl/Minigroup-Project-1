@@ -22,7 +22,6 @@ int dictionary(char* userInput) {
 
     file = fopen("dictionary.txt", "r");
 
-    sleep(1);
 
     while (fgets(dictionaryWord, buffer, file) != NULL){
     dictCount=0;
