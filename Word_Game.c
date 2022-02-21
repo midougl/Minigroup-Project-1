@@ -55,7 +55,7 @@ void randAlphabetPickerSinglePlayer(){  // for single player
     //random alph
     ranChar = (rand() % (lengthOfWord-2)) ;
     charHolder = alphabets[ranChar];
-/*
+/*  // random plyer pick for single player had problems with it working ///////////////////////
     // random player
     ranChar = (rand() % 2)+1 ;
     playerTacker = ranChar;
@@ -74,27 +74,31 @@ void randAlphabetPickerSinglePlayer(){  // for single player
     }
     else{
 
-    //starting first word here
-    while(!one){
+        //starting first word here
+        while(!one){
 
-        scanf("%s", newInput);
-        printf("\n");
+            if(playerTacker==2){
+                getWordFromtxtServerPlayer();
+            }
 
-        // checks if the input was "pass'
-        pass = PassCheckerForRandalph();
+            scanf("%s", newInput);
+            printf("\n");
 
-        if(!pass){
-            twoPasses =0;
+            // checks if the input was "pass'
+            pass = PassCheckerForRandalph();
 
-            two = checkIfWordUsed();
-            // makes sure letter user inputed are in the word
-            if(!two) one = availableLettersChecker();
+            if(!pass){
+                twoPasses =0;
 
-            //checks if userInput is in dictionary.txt
-            if(one) three = check_dict();
-            if(!three) one = false;
+                two = checkIfWordUsed();
+                // makes sure letter user inputed are in the word
+                if(!two) one = availableLettersChecker();
+
+                //checks if userInput is in dictionary.txt
+                if(one) three = check_dict();
+                if(!three) one = false;
+            }
         }
-    }
     }
 
      //sets up for next round
@@ -105,8 +109,6 @@ void randAlphabetPickerSinglePlayer(){  // for single player
     Calcscore(lengthOfWord);
     foundInDic = false;
 }
-
-
 
 
 //single player stuff  /////////////////////////////////////////////server
@@ -127,7 +129,7 @@ void MainGameLoopSingle(){
         if(playerTacker==1)playerTacker=2;
         else playerTacker=1;
 
-
+        // if its the servers turn
         if(playerTacker==2){
             printf("It is now the servers turn\n");
             getWordFromtxtServerPlayer();
@@ -150,7 +152,7 @@ void MainGameLoopSingle(){
             if(twoPasses<2){
                 one = checkIfWordUsed();
 
-                if(!one)two = check_dict();              //checks if userInput is in dictionary.txt
+                if(!one)two = check_dict();      //checks if userInput is in dictionary.txt
 
                 if(two) three = endOfWord();    //makes sure its the end of the previous word
 
@@ -170,7 +172,7 @@ void MainGameLoopSingle(){
                 }
             }
         }
-
+        // resets passes if it makes it in the loop
         else if (twoPasses!=1){
             bothPassCount=0;
             twoPasses =0;
@@ -191,7 +193,8 @@ void getWordFromtxtServerPlayer(){
     char found[32];
     int counting=0;
     int found2 = 0;
-
+    // reads txt for file input
+    // and looks for start of list
     inputFile = fopen(file, "r");
     while(fgets(check, playTextLength, inputFile)){
         count=0;
@@ -204,24 +207,24 @@ void getWordFromtxtServerPlayer(){
             break;
         }
     }
-    //foundWord=true;
+    // while loops for finding words
     while(fgets(check, playTextLength, inputFile)){
         count=0;
 
         if(foundWord==true){
             break;
         }
-
+        // if it starts with the ending char
         if(check[0]== newInput[strlen(newInput)-1]){
 
-
+        //to get rid of extra symbols in the string from the memory
         check[strcspn(check, "\r")]= 0;
         check[strcspn(check, "n")]=0;
         strtok(check, "\n");
 
         strcpy(newInput,check);
 
-
+            // checks if its in the used words array
             len = sizeof(usedWords)/sizeof(usedWords[0]);
             for(int i =0; i<len; i++){
                 if(!strcmp(usedWords[i], newInput)){
@@ -237,45 +240,46 @@ void getWordFromtxtServerPlayer(){
         }
     }
 
-
+    // this if loop if for if it found a word that works
     if(foundWord==false && found2 ==1){
         counting++;
         printf("Servers word is: %s\n", newInput);
-        //strcpy(newInput,newInput);
         strcpy(userInput, newInput);
-        strcpy(usedWords[wordCount],newInput);// need to add servers word///////////////////////////////////////////////
+        strcpy(usedWords[wordCount],newInput);
         wordCount++;
-
-
     }
+    // if the server cant find a word
     else{
     printf("Server had to pass\n");
         strcpy(newInput,pass);
         twoPasses++;
 
     }
-
-
+    // if player passes and server has to pass
+    if(twoPasses==2){
+        bothPassCount++;
+        if(bothPassCount==2){// if the server and player hav both passed 2 times in a row
+            printf("Both players have passed 2 time in a row. Game over");
+            exit(0);
+        }
+        else{// resets if 2 passes and its not 2 times in a row
+            twoPasses=0;
+            randAlphabetPickerSinglePlayer();
+        }
+    }
+    // gets rid of bad memory stuff
     newInput[strcspn(newInput, "\r")]= 0;
     newInput[strcspn(newInput, "n")]=0;
     strtok(newInput, "\n");
-
-
     newInput[strcspn(userInput, "\r")]= 0;
     newInput[strcspn(userInput, "n")]=0;
     strtok(userInput, "\n");
-
-
-
-
-
-
       fclose(inputFile);
       //return true;
 }
 
 
-void randAlphabetPicker(){  // pick random char at start of the game and random player
+void randAlphabetPicker(){  // pick random char at start of the game and random player multiplayer only
     int ranChar =0;
     int lengthOfWord =0;
     bool pass = false;
@@ -507,8 +511,6 @@ bool wordInTextFileCheck(){
         }
     }
 
-
-
       fclose(inputFile);
       return true;
 }
@@ -529,7 +531,13 @@ bool passCheck(){
                     printf("both players have passed reseting\n");
                     bothPassCount++;
                     twoPasses=0;
-                    randAlphabetPicker();
+                    // if your in single player moode menuOp = 1
+                    if(menuOp==1){
+                        randAlphabetPickerSinglePlayer();
+                    }
+                    else{
+                        randAlphabetPicker();
+                    }
                     return true;
                 }
                 return true;
@@ -551,7 +559,7 @@ bool endOfWord(){
             count++;
         }
     }
-/*
+/*  reused some where else
     if(count == strlen(userInput)){
         printf("You can't use the same word\n");
         printf("Penalized 1 point\n");
