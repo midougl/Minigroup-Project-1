@@ -2,6 +2,7 @@
 #include "randomFile.h"
 #include "dictionary_Check.h"
 #include "score.h"
+#include "scoreBoard.h"
 
 
 bool availableLettersChecker();
@@ -18,12 +19,18 @@ bool checkIfWordUsed();
 void addWordTotxt();
 void MainGameLoopSingle();
 void serverPlayer();
+void getWordFromtxtServerPlayer();
+void winner();
+
 
 char usedWords[500][30];
 int wordCount=0;
 
 
 int main() {
+
+    //readScore();  // for testing
+
     // calls menu function
     menu();
 
@@ -260,7 +267,8 @@ void getWordFromtxtServerPlayer(){
         bothPassCount++;
         if(bothPassCount==2){// if the server and player hav both passed 2 times in a row
             printf("Both players have passed 2 time in a row. Game over");
-            exit(0);
+
+            winner();
         }
         else{// resets if 2 passes and its not 2 times in a row
             twoPasses=0;
@@ -643,7 +651,7 @@ bool PassCheckerForRandalph(){
 
             if(bothPassCount ==2){
                 printf("game over both players pasted two times");
-                exit(0);
+                winner();
             }
 
             if(playerTacker==1)playerTacker=2;
@@ -656,3 +664,79 @@ bool PassCheckerForRandalph(){
     }
     return false;
 }
+
+void winner(){
+    if(menuOp==2){
+        if(score[1]>score[2]){
+            printf("Player1 Wins");
+            player1WonLoss=1;
+            player2WonLoss=0;
+        }
+        else if (score[2]>score[1]){
+            printf("Player2 Wins");
+            player1WonLoss=0;
+            player2WonLoss=1;
+        }
+        else{
+            printf("You tied");
+        }
+    }
+
+    if(menuOp==1){
+        if(score[1]>score[2]){
+            printf("You Won");
+            player1WonLoss=1;
+    }
+        else if (score[2]>score[1]){
+            printf("Server Wins");
+            player1WonLoss=0;
+        }
+        else{
+            printf("You tied");
+        }
+    }
+
+    void readScore();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
