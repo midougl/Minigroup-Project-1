@@ -26,5 +26,28 @@ int Calcscore(int wordSize){
     printf("score= %d\n", score[playerTacker]);
     printf("\n");
 
+    //number of words in the dict added
+
+    if(playerTacker==1 ){
+        if(foundInDic==true){
+            wordsAddPlayer1++;
+            wordsFoundPlayer1++;
+        }
+        else{
+            wordsFoundPlayer1++;
+        }
+    }
+
+
+    if(playerTacker==2 ){
+        if(foundInDic==true){
+            wordsAddPlayer2++;
+            wordsFoundPlayer2++;
+        }
+        else{
+            wordsFoundPlayer2++;
+        }
+    }
+
     return 0;
 }
