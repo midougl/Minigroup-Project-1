@@ -31,5 +31,11 @@ int twoPasses =0;
 int bothPassCount=0;
 char charHolder;
 int main();
+char usedWords[500][30];
+int wordCount=0;
+bool availableLettersChecker();
+bool endOfWord();
+bool check_dict();
+
 
 #endif // MAIN_H
