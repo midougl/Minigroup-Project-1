@@ -7,8 +7,16 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+int wordsFoundPlayer1=0;
+int wordsFoundPlayer2=0;
 
+int wordsAddPlayer1=0;
+int wordsAddPlayer2=0;
 
+char player1WonLoss=0;
+char player2WonLoss=0;
+
+char *file;
 bool foundInDic = false;
 char userInput[32];
 char alphabets[32];
@@ -22,5 +30,6 @@ char startingChar;
 int twoPasses =0;
 int bothPassCount=0;
 char charHolder;
+int main();
 
 #endif // MAIN_H
