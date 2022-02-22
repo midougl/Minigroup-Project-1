@@ -1,0 +1,6 @@
+First name	Last name	Country Score	Score   Win/lose     Number of Words Found 	Number of Words Added In The Dictionary 
+samuel            fipps             USa           9       loss                6                                       8         
+samuel            fipps             USa           9       loss                6                                       8         
+samuel            fipps             Uja           8       loss                6                                       8         
+samuel            fipps             USa           7       loss                6                                       8      
+samuel            fipps             USa           3       loss                6                                       8       
