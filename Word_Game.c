@@ -75,11 +75,16 @@ bool check_dict(){
     //******************************************************************************************************************
     if(contToDict){
 
+
         int pid = fork(); // fork to make a child
 
         if(pid==0){ // child
             // what used to be here
             contToDict = dictionary(newInput);
+            exit(0);
+        }
+        else if(pid <0){
+            printf("pid failed");
             exit(1);
         }
 
@@ -104,14 +109,18 @@ bool check_dict(){
 
             // opens the server
             if ((qd_server = mq_open (SERVER_QUEUE_NAME, O_RDONLY | O_CREAT, QUEUE_PERMISSIONS, &attr)) == -1) {
+                perror ("Client: mq_open (server)");
                 exit (1);
             }
 
             // waits until it gets message
           //  while (1) {
                 // get the oldest message with highest priority
-                if (mq_receive (qd_server, in_buffer, MSG_BUFFER_SIZE, NULL) == -1) {
+                if (mq_receive (qd_server, &in_buffer, MSG_BUFFER_SIZE, NULL) == -1) {
+
                     perror ("Server: mq_receive");
+
+
                     exit (1);
                 }
                 else{
@@ -121,6 +130,13 @@ bool check_dict(){
                         // so then set it true
                         foundInDic= true;
                         addWordTotxt();
+
+                        if (mq_close (qd_server) == -1) {
+                            perror ("Server: mq_close");
+                            exit (1);
+                        }
+
+
                         return true;
                     }
                     else {
@@ -129,16 +145,22 @@ bool check_dict(){
                         printf("%s is not accepted in the given dictionary\n", newInput);
                         printf("Penalized 1 point\n");
                         score[playerTacker] = score[playerTacker] -1;
+
+                        if (mq_close (qd_server) == -1) {
+                            perror ("Server: mq_close");
+                            exit (1);
+                        }
+
                         return false;
                     }
                     //end the loop because message was got
                   //  break;
                 }
 
+
             //}
         }
     }
-
 
     // what was replaced ************************************************************************************************
 
@@ -212,5 +234,3 @@ bool endOfWord(){
     score[playerTacker] = score[playerTacker] -1;
 return false;
 }
-
-
