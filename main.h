@@ -6,6 +6,12 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <mqueue.h>
+#define QUEUE_NAME "/queue1"
+
 
 int wordsFoundPlayer1=0;
 int wordsFoundPlayer2=0;
@@ -36,6 +42,6 @@ int wordCount=0;
 bool availableLettersChecker();
 bool endOfWord();
 bool check_dict();
-
+bool serverPass = false;
 
 #endif // MAIN_H
