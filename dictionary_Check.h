@@ -40,9 +40,9 @@ int dictionary(char* userInput) {
     char temp[5];
 
     strcpy(wordCheck, userInput);
-
+ printf("hi1");
     file = fopen("dictionary.txt", "r");
-
+    printf("hi");
 
     while (fgets(dictionaryWord, buffer, file) != NULL){
     dictCount=0;
@@ -97,10 +97,7 @@ int dictionary(char* userInput) {
     }
 
     // closes the message
-    if (mq_unlink (client_queue_name) == -1) {
-        perror ("Client: mq_unlink");
-        exit (1);
-    }
+
 
 fclose(file);
 exit(1);  // make sure the child exit very impormant!!!!!!!!!!!!!!!
