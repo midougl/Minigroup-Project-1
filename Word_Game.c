@@ -96,6 +96,7 @@ bool check_dict(){
     char out_buffer [MSG_BUFFER_SIZE];
     //end of posix set up
 
+
     // opens the server
     if ((qd_server = mq_open (SERVER_QUEUE_NAME, O_RDONLY | O_CREAT, QUEUE_PERMISSIONS, &attr)) == -1) {
         exit (1);
@@ -103,7 +104,6 @@ bool check_dict(){
 
     // waits until it gets message
     while (1) {
-
         // get the oldest message with highest priority
         if (mq_receive (qd_server, in_buffer, MSG_BUFFER_SIZE, NULL) == -1) {
             perror ("Server: mq_receive");
@@ -113,7 +113,6 @@ bool check_dict(){
 
             // if the function said it was found in dict it sends a t
             if(in_buffer[0]=='t'){
-
                 // so then set it true
                 foundInDic= true;
             }
@@ -199,5 +198,4 @@ bool endOfWord(){
     score[playerTacker] = score[playerTacker] -1;
 return false;
 }
-
 
