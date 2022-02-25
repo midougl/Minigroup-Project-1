@@ -6,10 +6,20 @@
 #include "gameRules.h"
 
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <mqueue.h>
 
-
-
-
+#define SERVER_QUEUE_NAME   "/sp-example-server"
+#define QUEUE_PERMISSIONS 0660
+#define MAX_MESSAGES 10
+#define MAX_MSG_SIZE 256
+#define MSG_BUFFER_SIZE MAX_MSG_SIZE + 10
 
 int main() {
 
@@ -30,7 +40,6 @@ int main() {
     }
 
 }
-
 
 
 //functions for making sure the letters used are in the given chars
@@ -60,7 +69,70 @@ bool check_dict(){
     bool contToDict=false;
     foundInDic = false;
 
-    contToDict = wordInTextFileCheck();
+    //******************************************************************************************************************
+    // starting posix
+    //******************************************************************************************************************
+    int pid = fork(); // fork to make a child
+
+    if(pid==0){ // child
+
+        // what used to be here
+        contToDict = wordInTextFileCheck();
+    }
+    else{ //parent
+
+    // wait for child to finish
+    wait(NULL);
+
+    // posix set up
+    mqd_t qd_server, qd_client;
+    long token_number = 1;
+    struct mq_attr attr;
+    attr.mq_flags = 0;
+    attr.mq_maxmsg = MAX_MESSAGES;
+    attr.mq_msgsize = MAX_MSG_SIZE;
+    attr.mq_curmsgs = 0;
+    char in_buffer [MSG_BUFFER_SIZE];
+    char out_buffer [MSG_BUFFER_SIZE];
+    //end of posix set up
+
+    // opens the server
+    if ((qd_server = mq_open (SERVER_QUEUE_NAME, O_RDONLY | O_CREAT, QUEUE_PERMISSIONS, &attr)) == -1) {
+        exit (1);
+    }
+
+    // waits until it gets message
+    while (1) {
+
+        // get the oldest message with highest priority
+        if (mq_receive (qd_server, in_buffer, MSG_BUFFER_SIZE, NULL) == -1) {
+            perror ("Server: mq_receive");
+            exit (1);
+        }
+        else{
+
+            // if the function said it was found in dict it sends a t
+            if(in_buffer[0]=='t'){
+
+                // so then set it true
+                foundInDic= true;
+            }
+            else {
+                // if not then set it false
+                foundInDic= false;
+            }
+            //end the loop because message was got
+            break;
+        }
+
+    }
+}
+
+    // what was replaced ************************************************************************************************
+    //contToDict = wordInTextFileCheck();
+
+// end of posix**********************************************************************************************************
+
 
     if(contToDict){
         if (dictionary(newInput) == 0) {
@@ -127,4 +199,5 @@ bool endOfWord(){
     score[playerTacker] = score[playerTacker] -1;
 return false;
 }
+
 
