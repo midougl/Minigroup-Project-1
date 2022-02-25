@@ -40,9 +40,8 @@ int dictionary(char* userInput) {
     char temp[5];
 
     strcpy(wordCheck, userInput);
- printf("hi1");
     file = fopen("dictionary.txt", "r");
-    printf("hi");
+
 
     while (fgets(dictionaryWord, buffer, file) != NULL){
     dictCount=0;
@@ -88,6 +87,7 @@ int dictionary(char* userInput) {
     // sends the message
     if (mq_send (qd_server, temp, strlen (client_queue_name), 0) == -1) {
         perror ("Client: Not able to send message to server");
+        exit(1);
     }
 
     // close the message
