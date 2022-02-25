@@ -37,6 +37,8 @@ int dictionary(char* userInput) {
     char wordCheck[buffer];
     int dictCount =0;
 
+
+
     char temp[5];
 
     strcpy(wordCheck, userInput);
@@ -60,6 +62,7 @@ int dictionary(char* userInput) {
             //return true;         **** this is what was reaplaced ****
         }
     }
+    fclose(file);
 
     // if it wasn't true then set it to f for false
     if(temp[0]!='t'){
@@ -100,7 +103,7 @@ int dictionary(char* userInput) {
 
 
 fclose(file);
-exit(1);  // make sure the child exit very impormant!!!!!!!!!!!!!!!
+exit(0);  // make sure the child exit very impormant!!!!!!!!!!!!!!!
 
    // fclose(file); // what was replaced!!!!!!!!
     //return false;
