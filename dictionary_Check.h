@@ -108,6 +108,12 @@ int dictionary(char* userInput) {
         exit (1);
     }
 
+    // close the message
+    if (mq_close (qd_client) == -1) {
+        perror ("Client: mq_close");
+        exit (1);
+    }
+
     // closes the message
 
 
