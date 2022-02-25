@@ -381,7 +381,18 @@ void MainGameLoop(){
     randAlphabetPicker(); //starts game
 
     while(cont){
-
+/* not done yet
+        if(pid==0){
+            while(playerTacker==1){
+            //waiting
+            }
+        }
+        if(pid!=0){
+            while(playerTacker==2){
+            //waiting
+            }
+        }
+*/
         //changes whos turn it is
         if(playerTacker==1)playerTacker=2;
         else playerTacker=1;
@@ -453,9 +464,23 @@ bool checkIfWordUsed(){
 
 //adds word to txt file
 void addWordTotxt(){
-    inputFile = fopen(file, "a");
-    fprintf(inputFile, "%s\n", newInput);
-    fclose(inputFile);
+/*
+    // posix here **********************************************************************
+    int pid = fork();
+    int child_status;
+
+    if(pid==0){
+    printf("hi");
+        inputFile = fopen(file, "a");
+        fprintf(inputFile, "%s\n", newInput);
+        fclose(inputFile);
+        exit(1);
+    }
+    else{
+        wait(pid,&child_status,0);
+    }
+
+*/
 }
 
 //checks if there word is already in the text file
