@@ -73,15 +73,24 @@ int dictionary(char* userInput) {
     char client_queue_name [64];
     mqd_t qd_server, qd_client;   // queue descriptors
     sprintf (client_queue_name, "/sp-example-client-%d", getpid ());
+
     struct mq_attr attr;
+
     attr.mq_flags = 0;
     attr.mq_maxmsg = MAX_MESSAGES;
     attr.mq_msgsize = MAX_MSG_SIZE;
     attr.mq_curmsgs = 0;
-    char in_buffer [MSG_BUFFER_SIZE];
+
     // end of setup stuff ****************************************************
 
     // opens the connections
+
+
+    if ((qd_client = mq_open (client_queue_name, O_RDONLY | O_CREAT, QUEUE_PERMISSIONS, &attr)) == -1) {
+        perror ("Client: mq_open (client)");
+        exit (1);
+    }
+
     if ((qd_server = mq_open (SERVER_QUEUE_NAME, O_WRONLY)) == -1) {
         perror ("Client: mq_open (server)");
         exit (1);
@@ -94,7 +103,7 @@ int dictionary(char* userInput) {
     }
 
     // close the message
-    if (mq_close (qd_client) == -1) {
+    if (mq_close (qd_server) == -1) {
         perror ("Client: mq_close");
         exit (1);
     }
