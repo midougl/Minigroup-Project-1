@@ -10,6 +10,26 @@
 
 
 
+
+// posix stuff
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <mqueue.h>
+
+#define SERVER_QUEUE_NAME   "/sp-example-server"
+#define QUEUE_PERMISSIONS 0660
+#define MAX_MESSAGES 10
+#define MAX_MSG_SIZE 256
+#define MSG_BUFFER_SIZE MAX_MSG_SIZE + 10
+// posix stuff end
+
+
+
 int dictionary(char* userInput) {
     FILE* file;
     int buffer = strlen(userInput)+1;
@@ -17,6 +37,7 @@ int dictionary(char* userInput) {
     char wordCheck[buffer];
     int dictCount =0;
 
+    char temp[5];
 
     strcpy(wordCheck, userInput);
 
@@ -32,25 +53,63 @@ int dictionary(char* userInput) {
 
         }
         if(dictCount== strlen(wordCheck)){
-            foundInDic= true;
+            //foundInDic= true;    **** this is what was reaplaced ****
             fclose(file);
-            return true;
+
+            // starts of posix stuff ***********************************************************************
+            strcpy(temp, "t");    // was replaced with this
+            //return true;         **** this is what was reaplaced ****
         }
     }
 
-
-
-
-  /*
-        if (strcmp(wordCheck, dictionaryWord)==0) {
-            boolean = 1;
-            foundInDic= true;
-            return true;
-        }
+    // if it wasn't true then set it to f for false
+    if(temp[0]!='t'){
+        strcpy(temp, "f");
     }
-    */
 
-    fclose(file);
-    return false;
+    //posix setup stuff ******************************************************
+    char client_queue_name [64];
+    mqd_t qd_server, qd_client;   // queue descriptors
+    sprintf (client_queue_name, "/sp-example-client-%d", getpid ());
+    struct mq_attr attr;
+    attr.mq_flags = 0;
+    attr.mq_maxmsg = MAX_MESSAGES;
+    attr.mq_msgsize = MAX_MSG_SIZE;
+    attr.mq_curmsgs = 0;
+    char in_buffer [MSG_BUFFER_SIZE];
+    // end of setup stuff ****************************************************
+
+    // opens the connections
+    if ((qd_server = mq_open (SERVER_QUEUE_NAME, O_WRONLY)) == -1) {
+        perror ("Client: mq_open (server)");
+        exit (1);
+    }
+
+    // sends the message
+    if (mq_send (qd_server, temp, strlen (client_queue_name), 0) == -1) {
+        perror ("Client: Not able to send message to server");
+    }
+
+    // close the message
+    if (mq_close (qd_client) == -1) {
+        perror ("Client: mq_close");
+        exit (1);
+    }
+
+    // closes the message
+    if (mq_unlink (client_queue_name) == -1) {
+        perror ("Client: mq_unlink");
+        exit (1);
+    }
+
+fclose(file);
+exit(1);  // make sure the child exit very impormant!!!!!!!!!!!!!!!
+
+   // fclose(file); // what was replaced!!!!!!!!
+    //return false;
+
+// end of posix ***************************************************************************************
+
+
 
 }
