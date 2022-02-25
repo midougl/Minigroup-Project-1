@@ -69,72 +69,83 @@ bool check_dict(){
     bool contToDict=false;
     foundInDic = false;
 
+    contToDict = wordInTextFileCheck();
     //******************************************************************************************************************
     // starting posix
     //******************************************************************************************************************
-    int pid = fork(); // fork to make a child
+    if(contToDict){
 
-    if(pid==0){ // child
+        int pid = fork(); // fork to make a child
 
-        // what used to be here
-        contToDict = wordInTextFileCheck();
-    }
-
-    else{ //parent
-
-    // wait for child to finish
-    int child_status;
-    wait(pid, &child_status, 0);
-
-    // posix set up
-    mqd_t qd_server, qd_client;
-    long token_number = 1;
-    struct mq_attr attr;
-    attr.mq_flags = 0;
-    attr.mq_maxmsg = MAX_MESSAGES;
-    attr.mq_msgsize = MAX_MSG_SIZE;
-    attr.mq_curmsgs = 0;
-    char in_buffer [MSG_BUFFER_SIZE];
-    char out_buffer [MSG_BUFFER_SIZE];
-    //end of posix set up
-
-
-    // opens the server
-    if ((qd_server = mq_open (SERVER_QUEUE_NAME, O_RDONLY | O_CREAT, QUEUE_PERMISSIONS, &attr)) == -1) {
-        exit (1);
-    }
-
-    // waits until it gets message
-    while (1) {
-        // get the oldest message with highest priority
-        if (mq_receive (qd_server, in_buffer, MSG_BUFFER_SIZE, NULL) == -1) {
-            perror ("Server: mq_receive");
-            exit (1);
-        }
-        else{
-
-            // if the function said it was found in dict it sends a t
-            if(in_buffer[0]=='t'){
-                // so then set it true
-                foundInDic= true;
-            }
-            else {
-                // if not then set it false
-                foundInDic= false;
-            }
-            //end the loop because message was got
-            break;
+        if(pid==0){ // child
+            // what used to be here
+            contToDict = dictionary(newInput);
+            exit(1);
         }
 
+        else{ //parent
+
+            // wait for child to finish
+            int child_status;
+            wait(pid, &child_status, 0);
+
+            // posix set up
+            mqd_t qd_server, qd_client;
+            long token_number = 1;
+            struct mq_attr attr;
+            attr.mq_flags = 0;
+            attr.mq_maxmsg = MAX_MESSAGES;
+            attr.mq_msgsize = MAX_MSG_SIZE;
+            attr.mq_curmsgs = 0;
+            char in_buffer [MSG_BUFFER_SIZE];
+            char out_buffer [MSG_BUFFER_SIZE];
+            //end of posix set up
+
+
+            // opens the server
+            if ((qd_server = mq_open (SERVER_QUEUE_NAME, O_RDONLY | O_CREAT, QUEUE_PERMISSIONS, &attr)) == -1) {
+                exit (1);
+            }
+
+            // waits until it gets message
+          //  while (1) {
+                // get the oldest message with highest priority
+                if (mq_receive (qd_server, in_buffer, MSG_BUFFER_SIZE, NULL) == -1) {
+                    perror ("Server: mq_receive");
+                    exit (1);
+                }
+                else{
+
+                    // if the function said it was found in dict it sends a t
+                    if(in_buffer[0]=='t'){
+                        // so then set it true
+                        foundInDic= true;
+                        addWordTotxt();
+                        return true;
+                    }
+                    else {
+                        // if not then set it false
+                        foundInDic= false;
+                        printf("%s is not accepted in the given dictionary\n", newInput);
+                        printf("Penalized 1 point\n");
+                        score[playerTacker] = score[playerTacker] -1;
+                        return false;
+                    }
+                    //end the loop because message was got
+                  //  break;
+                }
+
+            //}
+        }
     }
-}
+
 
     // what was replaced ************************************************************************************************
-    //contToDict = wordInTextFileCheck();
+
 
 // end of posix**********************************************************************************************************
 
-
+/*
     if(contToDict){
         if (dictionary(newInput) == 0) {
             printf("%s is not accepted in the given dictionary\n", newInput);
@@ -149,6 +160,7 @@ bool check_dict(){
             return true;
         }
     }
+    */
 
 
     if(!contToDict){
@@ -200,6 +212,5 @@ bool endOfWord(){
     score[playerTacker] = score[playerTacker] -1;
 return false;
 }
-
 
 
