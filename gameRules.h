@@ -33,12 +33,12 @@ void randAlphabetPickerSinglePlayer(){  // for single player
     //random alph
     ranChar = (rand() % (lengthOfWord-2)) ;
     charHolder = alphabets[ranChar];
-/*  // random plyer pick for single player had problems with it working ///////////////////////
+  // random plyer pick for single player had problems with it working ///////////////////////
     // random player
     ranChar = (rand() % 2)+1 ;
     playerTacker = ranChar;
-*/
-    playerTacker=1;
+
+   // playerTacker=1;
     printf("starting player is %d \n", playerTacker);
     printf("Make a word from %c\n", charHolder);
 
@@ -49,14 +49,38 @@ void randAlphabetPickerSinglePlayer(){  // for single player
     if(playerTacker==2){
         getWordFromtxtServerPlayer();
 
+
+
+                if(serverPass==true){
+
+                    if(playerTacker==1)playerTacker=2;
+                    else playerTacker=1;
+
+                    printf("It is now player %d turn\n", playerTacker);
+                    printf("Make a word from %c\n", charHolder);
+                }
+
+
+
     }
-    else{
+    if(playerTacker==1){
 
         //starting first word here
         while(!one){
 
             if(playerTacker==2){
                 getWordFromtxtServerPlayer();
+
+
+                if(serverPass==true){
+
+                    if(playerTacker==1)playerTacker=2;
+                    else playerTacker=1;
+
+                    printf("It is now player %d turn\n", playerTacker);
+                    printf("Make a word from %c\n", charHolder);
+                }
+
             }
 
             scanf("%s", newInput);
@@ -65,7 +89,10 @@ void randAlphabetPickerSinglePlayer(){  // for single player
             // checks if the input was "pass'
             pass = PassCheckerForRandalph();
 
+
+
             if(!pass){
+
                 twoPasses =0;
 
                 two = checkIfWordUsed();
@@ -76,6 +103,15 @@ void randAlphabetPickerSinglePlayer(){  // for single player
                 if(one) three = check_dict();
                 if(!three) one = false;
             }
+        if(!one &&! pass){
+            //printf("hi");
+            if(playerTacker==1)playerTacker=2;
+            else playerTacker=1;
+
+            printf("It is now player %d turn\n", playerTacker);
+            printf("Make a word from %c\n", charHolder);
+
+        }
         }
     }
 
@@ -231,6 +267,8 @@ void getWordFromtxtServerPlayer(){
     printf("Server had to pass\n");
         strcpy(newInput,pass);
         twoPasses++;
+        serverPass=true;
+
 
     }
     // if player passes and server has to pass
@@ -246,6 +284,8 @@ void getWordFromtxtServerPlayer(){
             randAlphabetPickerSinglePlayer();
         }
     }
+
+    if(!serverPass){
     // gets rid of bad memory stuff
     newInput[strcspn(newInput, "\r")]= 0;
     newInput[strcspn(newInput, "n")]=0;
@@ -255,6 +295,7 @@ void getWordFromtxtServerPlayer(){
     strtok(userInput, "\n");
       fclose(inputFile);
       //return true;
+      }
 }
 
 
@@ -304,6 +345,17 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
             //checks if userInput is in dictionary.txt
             if(one) three = check_dict();
             if(!three) one = false;
+        }
+        if(!one &&! pass){
+        //printf("hi");
+            if(playerTacker==1)playerTacker=2;
+            else playerTacker=1;
+
+            printf("It is now player %d turn\n", playerTacker);
+
+
+            printf("Make a word from %c\n", charHolder);
+
         }
     }
 
