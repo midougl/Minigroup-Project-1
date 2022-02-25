@@ -79,10 +79,12 @@ bool check_dict(){
         // what used to be here
         contToDict = wordInTextFileCheck();
     }
+
     else{ //parent
 
     // wait for child to finish
-    wait(NULL);
+    int child_status;
+    wait(pid, &child_status, 0);
 
     // posix set up
     mqd_t qd_server, qd_client;
@@ -198,4 +200,6 @@ bool endOfWord(){
     score[playerTacker] = score[playerTacker] -1;
 return false;
 }
+
+
 
