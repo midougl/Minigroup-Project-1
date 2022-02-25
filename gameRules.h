@@ -237,7 +237,7 @@ void getWordFromtxtServerPlayer(){
     if(twoPasses==2){
         bothPassCount++;
         if(bothPassCount==2){// if the server and player hav both passed 2 times in a row
-            printf("Both players have passed 2 time in a row. Game over");
+            printf("Both players have passed 2 time in a row. Game over\n");
 
             winner();
         }
