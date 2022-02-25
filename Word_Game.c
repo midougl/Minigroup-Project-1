@@ -95,28 +95,28 @@ bool check_dict(){
             wait(pid, &child_status, 0);
 
             // posix set up
-            mqd_t qd_server, qd_client;
-            long token_number = 1;
+            mqd_t qd_server;
             struct mq_attr attr;
             attr.mq_flags = 0;
             attr.mq_maxmsg = MAX_MESSAGES;
+
             attr.mq_msgsize = MAX_MSG_SIZE;
             attr.mq_curmsgs = 0;
             char in_buffer [MSG_BUFFER_SIZE];
-            char out_buffer [MSG_BUFFER_SIZE];
             //end of posix set up
-
 
             // opens the server
             if ((qd_server = mq_open (SERVER_QUEUE_NAME, O_RDONLY | O_CREAT, QUEUE_PERMISSIONS, &attr)) == -1) {
-                perror ("Client: mq_open (server)");
+                perror ("Server: mq_open (server)");
                 exit (1);
             }
 
             // waits until it gets message
           //  while (1) {
                 // get the oldest message with highest priority
-                if (mq_receive (qd_server, &in_buffer, MSG_BUFFER_SIZE, NULL) == -1) {
+                if (mq_receive (qd_server, in_buffer, MSG_BUFFER_SIZE, NULL) == -1) {
+
+                    printf("error\n");
 
                     perror ("Server: mq_receive");
 
@@ -156,9 +156,8 @@ bool check_dict(){
                     //end the loop because message was got
                   //  break;
                 }
+                printf("hi");
 
-
-            //}
         }
     }
 
@@ -183,6 +182,9 @@ bool check_dict(){
         }
     }
     */
+
+
+
 
 
     if(!contToDict){
@@ -234,3 +236,48 @@ bool endOfWord(){
     score[playerTacker] = score[playerTacker] -1;
 return false;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
