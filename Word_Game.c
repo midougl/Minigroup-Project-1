@@ -130,12 +130,12 @@ bool check_dict(){
                         // so then set it true
                         foundInDic= true;
                         addWordTotxt();
-
+/*
                         if (mq_close (qd_server) == -1) {
                             perror ("Server: mq_close");
                             exit (1);
                         }
-
+*/
 
                         return true;
                     }
@@ -145,19 +145,23 @@ bool check_dict(){
                         printf("%s is not accepted in the given dictionary\n", newInput);
                         printf("Penalized 1 point\n");
                         score[playerTacker] = score[playerTacker] -1;
-
+/*
                         if (mq_close (qd_server) == -1) {
                             perror ("Server: mq_close");
                             exit (1);
                         }
-
+*/
                         return false;
                     }
                     //end the loop because message was got
                   //  break;
                 }
-                printf("hi");
-
+/*
+                if (mq_close (qd_server) == -1) {
+                    perror ("Server: mq_close");
+                    exit (1);
+                }
+*/
         }
     }
 
