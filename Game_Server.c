@@ -114,7 +114,9 @@ int main() {
             
             bzero(server_mssg, buffer_size);
 
-            recv(client_socket, server_mssg, buffer_size, 0);
+            read(client_socket, server_mssg, buffer_size);
+            printf("user entered %s\n", server_mssg);
+            
             if(strcmp(server_mssg, "3") == 0) {
                 printf("Disconnected from the server\n");
                 break;
@@ -124,15 +126,17 @@ int main() {
                 //multiplayer 
             }
              else if (strcmp(server_mssg, "1") == 0){
-                MainGameLoopSingle();
-                send(client_socket, MainGameLoopSingle(), buffer_size, 0);
+               printf("SinglePlayer Selected\n");
+               //single player
             }
+
+            bzero(server_mssg, buffer_size);
             
             char* mainMenu = "\n1.    Single Player Mode\n2.    Multi-Player Mode\n3.    Exit\n \n";
             strcpy(server_mssg, mainMenu);
             printf("menu made\n");
-            send(client_socket, server_mssg, strlen(server_mssg), 0);
-            bzero(server_mssg, buffer_size);
+            write(client_socket, server_mssg, buffer_size);
+            
             
 
             
