@@ -28,7 +28,7 @@ char userInput[32];
 char alphabets[32];
 int playTextLength = 255;
 char playText[255];
-char newInput[32];
+char newInput[1024];
 FILE* inputFile;
 int lengthOfWord =0;
 int menuOp;
@@ -43,5 +43,9 @@ bool availableLettersChecker();
 bool endOfWord();
 bool check_dict();
 bool serverPass = false;
+
+
+char test[1024];
+char newLine[4] = "\n";
 
 #endif // MAIN_H
