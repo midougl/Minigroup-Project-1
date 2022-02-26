@@ -127,7 +127,7 @@ bool check_dict(){
 
                     // if the function said it was found in dict it sends a t
                     if(in_buffer[0]=='t'){
-                        // so then set it true
+                        // so then set it true"
                         foundInDic= true;
                         addWordTotxt();
 /*
@@ -240,48 +240,4 @@ bool endOfWord(){
     score[playerTacker] = score[playerTacker] -1;
 return false;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
