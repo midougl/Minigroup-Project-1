@@ -1,3 +1,21 @@
+/**
+ * Group A
+ * Brian Beach / Samuel Fipps
+ * 2/16/22
+ * 
+ * Word_Game.c  Description:
+ * Brian - made a game that took input file x (randomly generated from randomFile.h) and has the player create a word from those letters
+ * The game then determines if the word is valid (checks if only given letters were used). If so, adds score and goes to next part where player
+ * needs to make the word from the ending of the previously used word. Goes until the player messes up
+ * 
+ * Samuel - turned parts of the game into seperate functions (availableLetters, endOfWord) so that the game can be changed up when we create
+ * a single_player and multi_player options. Added score.h to be able to keep correct scoring system.
+ * 
+ * Still things needed to be done -ex: create array to keep previously used words, turn word_game into two seperate games for single player and 
+ * multi player
+ **/
+
+
 #include "main.h"
 #include "randomFile.h"
 #include "dictionary_Check.h"
@@ -14,6 +32,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <mqueue.h>
+#include <sys/wait.h>
 
 #define SERVER_QUEUE_NAME   "/sp-example-server"
 #define QUEUE_PERMISSIONS 0660
@@ -21,7 +40,7 @@
 #define MAX_MSG_SIZE 256
 #define MSG_BUFFER_SIZE MAX_MSG_SIZE + 10
 
-int main() {
+int game_main() {
 
     //readScore();  // for testing
 
@@ -33,10 +52,10 @@ int main() {
 
     if(menuOp==1){
         // starts game
-        MainGameLoopSingle();
+        //MainGameLoopSingle();
     }
     if(menuOp==2){ // for multiplayer
-        MainGameLoop();
+        //MainGameLoop();
     }
 
 }
@@ -52,6 +71,7 @@ bool availableLettersChecker(){
         }
     }
     if (check == 0) {
+        
         printf("Word does not count because you used '%c' which is not in the list of letters\n", newInput[0]);
         printf("Penalized 1 point");
         score[playerTacker] = score[playerTacker] -1;
@@ -92,7 +112,7 @@ bool check_dict(){
 
             // wait for child to finish
             int child_status;
-            wait(pid, &child_status, 0);
+            waitpid(pid, &child_status, 0);
 
             // posix set up
             mqd_t qd_server;
@@ -177,7 +197,6 @@ bool check_dict(){
             printf("Penalized 1 point\n");
             score[playerTacker] = score[playerTacker] -1;
             return false;
-
         }
         else{
             foundInDic = true;
@@ -240,4 +259,3 @@ bool endOfWord(){
     score[playerTacker] = score[playerTacker] -1;
 return false;
 }
-
