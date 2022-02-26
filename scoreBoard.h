@@ -77,6 +77,7 @@ void readScore(){
     // if we do need to be on the board this is were it starts
     if(needToAdd1==1){
 
+
         // gets info from player
          printf("Please enter first name\n");
          scanf("%s", firstName);
@@ -94,6 +95,20 @@ void readScore(){
          }
 
         fclose(filesc);
+
+        //********************************************************************************************
+        // forking here ********************************** to write to scoreboard files****************
+        //********************************************************************************************
+
+        int pid = fork();
+        int child_status;
+
+        if (pid==0){
+
+
+
+
+
         // clears the txt file so only the top 5 are there
         filesc = fopen("multiPlayer.txt", "w");//clears txt
         fprintf(filesc,"%s",header);
@@ -111,7 +126,14 @@ void readScore(){
                     fprintf(filesc,"\n%-18s%-18s%-14s%-8d%-20s%-40d%-10d", first[i], last[i], country[i], scoreb[i], win[i], found[i], added[i]);
                 }
             }
+            exit(0); // close child*******************************************************************
         }
+        else {
+            wait(pid, &child_status,0);
+
+        }
+
+    }
 
 
         // for player2 starting here///////////////////////   all comments for this code should be the same as above.
@@ -339,25 +361,5 @@ void readScoreSinglePlayer(){
     main();
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
