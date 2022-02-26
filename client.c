@@ -25,11 +25,12 @@ int main() {
 
     memset(&address, '\0', sizeof(address));
     address.sin_family = AF_INET;
-    address.sin_port = htons(5998);
+    address.sin_port = htons(5999);
     address.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     connect(sock, (struct sockaddr*)&address, sizeof(address));
     printf("Successfully connected to server\n");
+    printf("Type anything to begin \n");
 
     //while loop running when connected to server
     while(1) {
