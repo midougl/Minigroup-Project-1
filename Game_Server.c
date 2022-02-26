@@ -53,7 +53,7 @@ int main() {
     //give all address information for socket
     struct sockaddr_in game_address;
     game_address.sin_family = AF_INET;
-    game_address.sin_port = htons(5998);                     //port address
+    game_address.sin_port = htons(5999);                     //port address
     game_address.sin_addr.s_addr = inet_addr("127.0.0.1");   //server address
 
 
@@ -127,11 +127,22 @@ int main() {
             }
              else if (strcmp(server_mssg, "1") == 0){
                printf("SinglePlayer Selected\n");
+               
+               while (strcmp(server_mssg, "dc") != 0) {
+                menuOp = 1;
+                MainGameLoopSingle(client_socket);
+                bzero(server_mssg, buffer_size);
+                read(client_socket, server_mssg, buffer_size);
+               }
+               printf("out of single player loop\n");
+               //MainGameLoopSingle(client_socket);
                //single player
             }
 
-            bzero(server_mssg, buffer_size);
             
+            printf("not in if statements\n");
+            bzero(server_mssg, buffer_size);
+
             char* mainMenu = "\n1.    Single Player Mode\n2.    Multi-Player Mode\n3.    Exit\n \n";
             strcpy(server_mssg, mainMenu);
             printf("menu made\n");
