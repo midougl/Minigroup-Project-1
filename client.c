@@ -34,17 +34,15 @@ int main() {
     //while loop running when connected to server
     while(1) {
         bzero(buffer, buffer_size);
-        printf("******************MAIN MENU*****************\n");
-        printf("1) Single player\n");
-        printf("2) Multiplayer\n");
-        printf("3) Exit\n");
+        
         
         scanf("%s", buffer);
-        send(sock, buffer, strlen(buffer), 0);
+        write(sock, buffer, strlen(buffer));
+        bzero(buffer, buffer_size);
 
-        recv(sock, buffer, sizeof(buffer), 0);
+        read(sock, buffer, buffer_size);
 
-        if(strcmp(buffer, "dc") == 0) {
+        if(strcmp(buffer, "3") == 0) {
             printf("disconnected from server\n");
             close(sock);
             break;
