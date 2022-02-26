@@ -296,6 +296,7 @@ void getWordFromtxtServerPlayer(){
       fclose(inputFile);
       //return true;
       }
+      fclose(inputFile);
 }
 
 
@@ -464,23 +465,22 @@ bool checkIfWordUsed(){
 
 //adds word to txt file
 void addWordTotxt(){
-/*
+
     // posix here **********************************************************************
     int pid = fork();
     int child_status;
 
     if(pid==0){
-    printf("hi");
         inputFile = fopen(file, "a");
         fprintf(inputFile, "%s\n", newInput);
         fclose(inputFile);
-        exit(1);
+        exit(0);
     }
     else{
         wait(pid,&child_status,0);
     }
 
-*/
+
 }
 
 //checks if there word is already in the text file
@@ -650,6 +650,7 @@ void winner(){
     }
 
     if(menuOp==1){
+
     readScoreSinglePlayer();
 
     }
