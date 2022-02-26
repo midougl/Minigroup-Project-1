@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <sys/wait.h>
 #include "main.h"
 
 void MainGameLoop();
@@ -477,7 +478,7 @@ void addWordTotxt(){
         exit(0);
     }
     else{
-        wait(pid,&child_status,0);
+        waitpid(pid,&child_status,0);
     }
 
 
