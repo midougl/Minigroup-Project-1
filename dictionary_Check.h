@@ -55,7 +55,7 @@ int dictionary(char* userInput) {
         }
         if(dictCount== strlen(wordCheck)){
             //foundInDic= true;    **** this is what was reaplaced ****
-            fclose(file);
+            //fclose(file);
 
             // starts of posix stuff ***********************************************************************
             strcpy(temp, "t");    // was replaced with this
@@ -117,7 +117,7 @@ int dictionary(char* userInput) {
     // closes the message
 
 
-fclose(file);
+//fclose(file);
 exit(0);  // make sure the child exit very impormant!!!!!!!!!!!!!!!
 
    // fclose(file); // what was replaced!!!!!!!!
