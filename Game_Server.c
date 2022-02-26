@@ -22,7 +22,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#include "randomFile.h"
+//#include "randomFile.h"
+#include "Word_Game.c"
 
 #define buffer_size 1024
 
@@ -110,15 +111,31 @@ int main() {
         //******************************************** Server should be connected with child at this point**************************************
         //******************************************** Posix message passing belown here            **************************************
         while (1) {
+            
+            bzero(server_mssg, buffer_size);
+
             recv(client_socket, server_mssg, buffer_size, 0);
-            if(strcmp(server_mssg, "dc") == 0) {
+            if(strcmp(server_mssg, "3") == 0) {
                 printf("Disconnected from the server\n");
                 break;
             }
-            else {
-                printf("Client message - %s\n", server_mssg);
-                send(client_socket, server_mssg, strlen(server_mssg), 0);
+            else if (strcmp(server_mssg, "2") == 0){
+                printf("MultiPlayer Selected\n");
+                //multiplayer 
             }
+             else if (strcmp(server_mssg, "1") == 0){
+                MainGameLoopSingle();
+                send(client_socket, MainGameLoopSingle(), buffer_size, 0);
+            }
+            
+            char* mainMenu = "\n1.    Single Player Mode\n2.    Multi-Player Mode\n3.    Exit\n \n";
+            strcpy(server_mssg, mainMenu);
+            printf("menu made\n");
+            send(client_socket, server_mssg, strlen(server_mssg), 0);
+            bzero(server_mssg, buffer_size);
+            
+
+            
         }
     }
 
