@@ -1,5 +1,5 @@
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef SERVER_MAIN_H
+#define SERVER_MAIN_H
 
 #include <stdio.h>
 #include <stdlib.h>
