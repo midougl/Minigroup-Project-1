@@ -16,11 +16,11 @@
  **/
 
 
-#include "main.h"
+#include "server_main.h"
 #include "randomFile.h"
-#include "dictionary_Check.h"
+#include "server_dictionary_Check.h"
 #include "server_score.h"
-#include "scoreBoard.h"
+#include "server_scoreBoard.h"
 #include "server_gameRules.h"
 
 
