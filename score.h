@@ -22,19 +22,6 @@ int Calcscore(int wordSize){
 
     if(foundInDic==true) score[playerTacker] = score[playerTacker] +5;
 
-
-    //FOR SERVER////////////////////////////////////////////////////////////////////
-    snprintf(scoreTracker, 64, "score for player %d: \n", playerTacker);
-    strcat(test, scoreTracker);
-    bzero(scoreTracker, 64);
-    
-    snprintf(scoreTracker, 64, "score= %d\n", score[playerTacker]);
-    strcat(test, scoreTracker);
-    strcat(test, newLine);
-    bzero(scoreTracker, 64);
-    ///////////////////////////////////////////////////////////////////////////////
-
-
     printf("\nscore for player: %d\n", playerTacker);
     printf("score= %d\n", score[playerTacker]);
     printf("\n");
