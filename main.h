@@ -47,5 +47,6 @@ bool serverPass = false;
 
 char test[1024];
 char newLine[4] = "\n";
+char scoreTracker[64];
 
 #endif // MAIN_H
