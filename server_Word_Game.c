@@ -40,19 +40,21 @@
 #define MAX_MSG_SIZE 256
 #define MSG_BUFFER_SIZE MAX_MSG_SIZE + 10
 
-int game_main() {
+int game_main(int client_socket, int op) {
 
     //readScore();  // for testing
 
     // calls menu function
-    menu();
+    //menu();
 
     //gets word from txt file
     getWordFromTxt();
 
+    menuOp = op;
+
     if(menuOp==1){
         // starts game
-        //MainGameLoopSingle();
+        MainGameLoopSingle(client_socket);
     }
     if(menuOp==2){ // for multiplayer
         //MainGameLoop();
