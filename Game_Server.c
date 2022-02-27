@@ -23,7 +23,7 @@
 #include <unistd.h>
 
 //#include "randomFile.h"
-#include "Word_Game.c"
+#include "server_Word_Game.c"
 
 #define buffer_size 1024
 
@@ -127,11 +127,17 @@ int main() {
             }
              else if (strcmp(server_mssg, "1") == 0){
                printf("SinglePlayer Selected\n");
+               menuOp = 1;
                
                while (strcmp(server_mssg, "dc") != 0) {
-                menuOp = 1;
-                MainGameLoopSingle(client_socket);
+                game_main(client_socket, 1);
                 bzero(server_mssg, buffer_size);
+                char* dc = "Type dc to exit";
+                strcpy(server_mssg, dc);
+                
+                write(client_socket, server_mssg, buffer_size);
+                bzero(server_mssg, buffer_size);
+
                 read(client_socket, server_mssg, buffer_size);
                }
                printf("out of single player loop\n");
