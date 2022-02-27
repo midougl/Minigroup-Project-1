@@ -208,8 +208,8 @@ void randAlphabetPickerSinglePlayer(int client_socket){  // for single player
             strcat(test, newLine);
             printf("%s", playerTurn);
             bzero(playerTurn, 64);
-            //printf("It is now player %d turn\n", playerTacker);
-            //printf("Make a word from %c\n", charHolder);
+            printf("It is now player %d turn\n", playerTacker);
+            printf("Make a word from %c\n", charHolder);
 
         }
         }
@@ -245,13 +245,7 @@ void MainGameLoopSingle(int client_socket){
     
     strcpy(test, "Your set of alphabets is: ");
     strcat(test, userInput);
-    strcat(test, "\nType in anything to continue");
-    printf("%s", test);
-    write(client_socket, test, strlen(test));
-
-    bzero(test, 1024);
     
-    read(client_socket, test, 1024);
     
     //strcpy(test, "made it past the read inside main game single ");
     //write(client_socket, test, strlen(test));
