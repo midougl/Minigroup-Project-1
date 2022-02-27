@@ -689,10 +689,14 @@ bool passCheck(int client_socket){
 }
 // menu display function
 void menu(){
+    /////////////////////////////////////////////////////////////////////////////////////////
+    char* mainMenu = "\n1.    Single Player Mode\n2.    Multi-Player Mode\n3.    Exit\n \n";
+    strcpy(test, mainMenu);
+    ////////////////////////////////////////////////////////////////////////////////////////
     printf("\n1.    Single Player Mode\n");
     printf("2.    Multi-Player Mode\n");
     printf("3.    Exit\n \n");
-    scanf("%d", &menuOp);
+    //scanf("%d", &menuOp);
 
     if(menuOp == 1) printf("Starting Single Player Mode\n \n");
     if(menuOp == 2) printf("Starting Multi-Player Mode\n \n");
