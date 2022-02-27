@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <sys/wait.h>
-#include "main.h"
+#include "server_main.h"
 
 void MainGameLoop();
 void getWordFromTxt();
@@ -21,43 +21,6 @@ void winner();
 
 
 
-/*test function for writing to client from server
-void testing(int client_socket, char buffer[1024]) {
-    if (strcmp(buffer, "dc") == 0) {
-        char exit[256];
-        //strcpy(test, "\nNumber this time = ");
-        strcpy(exit, "Exiting loop ");
-
-        //strcat(test, userInput);
-        printf("%s", exit);
-        write(client_socket, exit, strlen(exit));
-        test = 0;
-        
-    }
-    else {
-        char test[1024];
-        //strcpy(test, "\nNumber this time = ");
-        strcpy(test, "Inside testing loop ");
-
-        //strcat(test, userInput);
-        printf("%s", test);
-        write(client_socket, test, strlen(test));
-        bzero(test, 1024);
-        read(client_socket, test, 1024);
-
-
-
-
-        strcpy(test, "Inside part two -- nice ");
-
-        //strcat(test, userInput);
-        printf("%s", test);
-        write(client_socket, test, strlen(test));
-        bzero(test, 1024);
-        //read(client_socket, test, 1024);
-    }
-}
-*/
 
 
 
