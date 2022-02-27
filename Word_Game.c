@@ -32,7 +32,6 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <mqueue.h>
-#include <sys/wait.h>
 
 #define SERVER_QUEUE_NAME   "/sp-example-server"
 #define QUEUE_PERMISSIONS 0660
@@ -40,7 +39,7 @@
 #define MAX_MSG_SIZE 256
 #define MSG_BUFFER_SIZE MAX_MSG_SIZE + 10
 
-int game_main() {
+int main() {
 
     //readScore();  // for testing
 
@@ -52,10 +51,10 @@ int game_main() {
 
     if(menuOp==1){
         // starts game
-        //MainGameLoopSingle();
+        MainGameLoopSingle();
     }
     if(menuOp==2){ // for multiplayer
-        //MainGameLoop();
+        MainGameLoop();
     }
 
 }
@@ -65,25 +64,12 @@ int game_main() {
 bool availableLettersChecker(){
     int check=0;
 
-    //used for server
-    char serverWords[64];
-
     for (int j = 0; j < strlen(userInput); ++j) {
         if (tolower(newInput[0]) == tolower(userInput[j])) {
             check = 1;
         }
     }
     if (check == 0) {
-        //server test/////////////////////////////////////
-        strcpy(serverWords, "Word does not count because you used ");
-        strncat(serverWords, &newInput[0], 1);
-        strcat(test, serverWords);
-        bzero(serverWords, 64);
-        strcpy(serverWords, " which is not in the list of letters");
-        strcat(test, serverWords);
-        strcat(test, newLine);
-        bzero(serverWords, 64);
-        /////////////////////////////////////////////////
         printf("Word does not count because you used '%c' which is not in the list of letters\n", newInput[0]);
         printf("Penalized 1 point");
         score[playerTacker] = score[playerTacker] -1;
@@ -98,10 +84,6 @@ return false;
 
 // checks if word is in dict
 bool check_dict(){
-    //used for server
-    char serverWords[64];
-
-
     bool contToDict=false;
     foundInDic = false;
 
@@ -128,7 +110,7 @@ bool check_dict(){
 
             // wait for child to finish
             int child_status;
-            waitpid(pid, &child_status, 0);
+            wait(pid, &child_status, 0);
 
             // posix set up
             mqd_t qd_server;
@@ -178,13 +160,6 @@ bool check_dict(){
                     else {
                         // if not then set it false
                         foundInDic= false;
-                        //server test/////////////////////////////////////
-                        strcat(test, userInput);
-                        strcpy(serverWords, " is not in the given dictionary. -1 point");
-                        strcat(test, serverWords);
-                        strcat(test, newLine);
-                        bzero(serverWords, 64);
-                        /////////////////////////////////////////////////
                         printf("%s is not accepted in the given dictionary\n", newInput);
                         printf("Penalized 1 point\n");
                         score[playerTacker] = score[playerTacker] -1;
@@ -243,10 +218,6 @@ bool check_dict(){
 
 //check if the user input starts with the ending of preivous input
 bool endOfWord(){
-    //test for server
-    char serverWords[64];
-
-
     int count = 0;
     char word1[100];
     bool sameWord = false;
@@ -281,13 +252,6 @@ bool endOfWord(){
             }
         }
     }
-
-    //server test/////////////////////////////////////
-    strcpy(serverWords, "Word didn't start with ending of last. -1 point");
-    strcat(test, serverWords);
-    strcat(test, newLine);
-    bzero(serverWords, 64);
-    /////////////////////////////////////////////////
     printf("word didnt start with ending of last\n");
     printf("Penalized 1 point\n");
     score[playerTacker] = score[playerTacker] -1;
