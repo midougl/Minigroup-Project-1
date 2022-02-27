@@ -20,32 +20,8 @@ void getWordFromtxtServerPlayer();
 void winner();
 
 
-
-
-
-
-
-//gets aphlabet from txt
-void getWordFromTxt(){
-    //gets random input file in form "input_xx.txt"
-    file = randomInputFile();
-    printf("Using game file: %s\n", file);
-    inputFile = fopen(file, "r");
-
-    //gets word to play from input file and inputs it into playText
-    fgets(userInput, playTextLength, inputFile);
-
-    for(int i=0; i<strlen(userInput); i++){
-        alphabets[i]=userInput[i];
-    }
-    fclose(inputFile);
-}
-
-
-
 void randAlphabetPickerSinglePlayer(int client_socket){  // for single player
-    //IN CASE IT IS NOT EMPTY
-    bzero(test, 1024);
+
 
     int ranChar =0;
     int lengthOfWord =0;
@@ -65,25 +41,21 @@ void randAlphabetPickerSinglePlayer(int client_socket){  // for single player
     ranChar = (rand() % 2)+1 ;
     playerTacker = ranChar;
 
-   // playerTacker=1;
-   //CHANGES TO COMMUNICATE WITH SERVER/////////////////////////////////////////////////////////////////////////
+
+    //CHANGES TO COMMUNICATE WITH SERVER/////////////////////////////////////////////////////////////////////////
     char playerTurn[64];
     snprintf(playerTurn, 64, "Starting player is %d turn\nMake a word from: ", playerTacker);
     strncat(playerTurn, &charHolder, 1);
     strcat(test, playerTurn);
     strcat(test, newLine);
-    //write(client_socket, playerTurn, strlen(playerTurn));
-    printf("%s", playerTurn);
-    //printf("It is now player %d turn\n", playerTacker);
-    //printf("Make a word from %s\n", userInput);
     bzero(playerTurn, 64);
     //read(client_socket, test, 1024);
     //strcpy(newInput, test);
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-    //printf("starting player is %d \n", playerTacker);
-    //printf("Make a word from %c\n", charHolder);
+   // playerTacker=1;
+    printf("starting player is %d \n", playerTacker);
+    printf("Make a word from %c\n", charHolder);
 
     //Changes userInput to alphabets holder
     for(int i=0; i<strlen(alphabets);i++){
@@ -96,12 +68,18 @@ void randAlphabetPickerSinglePlayer(int client_socket){  // for single player
 
                 if(serverPass==true){
 
+                    if(playerTacker==1)playerTacker=2;
+                    else playerTacker=1;
+                    ////////////////////////////////////////////////////////////////////////////////////////////
                     snprintf(playerTurn, 64, "It is player %d turn\nMake a word from: ", playerTacker);
                     strncat(playerTurn, &charHolder, 1);
                     strcat(test, playerTurn);
                     strcat(test, newLine);
                     printf("%s", playerTurn);
                     bzero(playerTurn, 64);
+                    ///////////////////////////////////////////////////////////////////////////////////////////
+                    printf("It is now player %d turn\n", playerTacker);
+                    printf("Make a word from %c\n", charHolder);
                 }
 
 
@@ -120,17 +98,19 @@ void randAlphabetPickerSinglePlayer(int client_socket){  // for single player
 
                     if(playerTacker==1)playerTacker=2;
                     else playerTacker=1;
-
+                    ///////////////////////////////////////////////////////////////////////////////////////////
                     snprintf(playerTurn, 64, "It is player %d turn\nMake a word from: ", playerTacker);
                     strncat(playerTurn, &charHolder, 1);
                     strcat(test, playerTurn);
                     strcat(test, newLine);
                     printf("%s", playerTurn);
                     bzero(playerTurn, 64);
+                    ///////////////////////////////////////////////////////////////////////////////////////////
+                    printf("It is now player %d turn\n", playerTacker);
+                    printf("Make a word from %c\n", charHolder);
                 }
 
             }
-
             write(client_socket, test, strlen(test));
             printf("%s", test);
             //printf("It is now player %d turn\n", playerTacker);
@@ -138,12 +118,13 @@ void randAlphabetPickerSinglePlayer(int client_socket){  // for single player
             bzero(test, 1024);
             read(client_socket, test, 1024);
             strcpy(newInput, test);
+            bzero(test, 1024);
             printf("%s", newInput);
             //scanf("%s", newInput);
             printf("\n");
 
             // checks if the input was "pass'
-            pass = PassCheckerForRandalph();
+            pass = PassCheckerForRandalph(client_socket);
 
 
 
@@ -163,14 +144,14 @@ void randAlphabetPickerSinglePlayer(int client_socket){  // for single player
             //printf("hi");
             if(playerTacker==1)playerTacker=2;
             else playerTacker=1;
-
-
+            //SERVER SPECIFIC//////////////////////////////////////////////////////////////////////////
             snprintf(playerTurn, 64, "It is player %d turn\nMake a word from: ", playerTacker);
             strncat(playerTurn, &charHolder, 1);
             strcat(test, playerTurn);
             strcat(test, newLine);
             printf("%s", playerTurn);
             bzero(playerTurn, 64);
+            /////////////////////////////////////////////////////////////////////////////////////////
             printf("It is now player %d turn\n", playerTacker);
             printf("Make a word from %c\n", charHolder);
 
@@ -197,31 +178,17 @@ void MainGameLoopSingle(int client_socket){
     bool three = true;
     bool twopass = false;
 
-    /*TESTING STUFF FOR SERVER//////////////////////////////////////////////////////////////////////////////////////////////////
-    char* test = "Single player loop coming through to client\n";
-    write(client_socket, test, strlen(test));
-    */
 
-    getWordFromTxt();
-
-    //char test[1024];
-    
+    //////////////////////////////////////////////////
     strcpy(test, "Your set of alphabets is: ");
     strcat(test, userInput);
-    
-    
-    //strcpy(test, "made it past the read inside main game single ");
-    //write(client_socket, test, strlen(test));
+    ////////////////////////////////////////////////
 
-    //bzero(test, 1024);
-
-
-    //printf("Your set of alphabets is %s\n", userInput);
-    //printf("printing on server side\n");
+    printf("Your set of alphabets is %s\n", userInput);
     randAlphabetPickerSinglePlayer(client_socket); //starts game
 
     while(cont){
-        
+
         //changes whos turn it is
         if(playerTacker==1)playerTacker=2;
         else playerTacker=1;
@@ -229,12 +196,12 @@ void MainGameLoopSingle(int client_socket){
         // if its the servers turn
         if(playerTacker==2){
             // FOR SERVER///////////////////////////////////////////////////////////////
-            char serverTurn[50] = "It is now the servers turn \n";
+            char serverTurn[50] = "It is now the servers turn ";
             strcat(test, serverTurn);
             strcat(test, newLine);
             bzero(serverTurn, 50);
             ///////////////////////////////////////////////////////////////////////////
-            //printf("");
+            printf("It is now the servers turn\n");
             getWordFromtxtServerPlayer(client_socket);
         }
         else{
@@ -246,16 +213,17 @@ void MainGameLoopSingle(int client_socket){
             strcat(test, newLine);
             write(client_socket, test, strlen(test));
             bzero(playerTurn, 64);
-            printf("%s", test);
-            //printf("It is now player %d turn\n", playerTacker);
-            //printf("Make a word from %s\n", userInput);
+            //printf("%s", test);
             bzero(test, 1024);
             read(client_socket, test, 1024);
             bzero(newInput, 1024); 
             strcpy(newInput, test);
+            bzero(test, 1024);
             ////////////////////////////////////////////////////////////////////////////
-            //printf("%s", newInput);
-            //printf("\n");
+            printf("It is now player %d turn\n", playerTacker);
+            printf("Make a word from %s\n", userInput);
+            //scanf("%s", newInput);
+            printf("\n");
 
 
         // checks if the input was "pass'
@@ -356,8 +324,10 @@ void getWordFromtxtServerPlayer(int client_socket){
         }
     }
 
+
     //used for server
     char serverWords[64];
+
     // this if loop if for if it found a word that works
     if(foundWord==false && found2 ==1){
         counting++;
@@ -375,13 +345,13 @@ void getWordFromtxtServerPlayer(int client_socket){
     }
     // if the server cant find a word
     else{
-        //server test/////////////////////////////////////
-        strcpy(serverWords, "Server had to pass.");
-        strcat(test, serverWords);
-        strcat(test, newLine);
-        bzero(serverWords, 64);
-        /////////////////////////////////////////////////
-        printf("Server had to pass\n");
+    //server test/////////////////////////////////////
+    strcpy(serverWords, "Server had to pass.");
+    strcat(test, serverWords);
+    strcat(test, newLine);
+    bzero(serverWords, 64);
+    /////////////////////////////////////////////////
+    printf("Server had to pass\n");
         strcpy(newInput,pass);
         twoPasses++;
         serverPass=true;
@@ -398,10 +368,9 @@ void getWordFromtxtServerPlayer(int client_socket){
             strcat(test, newLine);
             bzero(serverWords, 64);
             /////////////////////////////////////////////////
-
             printf("Both players have passed 2 time in a row. Game over\n");
 
-            winner();
+            winner(client_socket);
         }
         else{// resets if 2 passes and its not 2 times in a row
             twoPasses=0;
@@ -424,7 +393,7 @@ void getWordFromtxtServerPlayer(int client_socket){
 }
 
 
-void randAlphabetPicker(){  // pick random char at start of the game and random player multiplayer only
+void randAlphabetPicker(int client_socket){  // pick random char at start of the game and random player multiplayer only
     int ranChar =0;
     int lengthOfWord =0;
     bool pass = false;
@@ -443,6 +412,16 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
     ranChar = (rand() % 2)+1 ;
     playerTacker = ranChar;
 
+    //CHANGES TO COMMUNICATE WITH SERVER/////////////////////////////////////////////////////////////////////////
+    char playerTurn[64];
+    snprintf(playerTurn, 64, "Starting player is %d turn\nMake a word from: ", playerTacker);
+    strncat(playerTurn, &charHolder, 1);
+    strcat(test, playerTurn);
+    strcat(test, newLine);
+    bzero(playerTurn, 64);
+    //read(client_socket, test, 1024);
+    //strcpy(newInput, test);
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     printf("starting player is %d \n", playerTacker);
     printf("Make a word from %c\n", charHolder);
 
@@ -453,12 +432,17 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
 
     //starting first word here
     while(!one){
-
-        scanf("%s", newInput);
+        ///////////////////////////////////////////////////////////////////////////////////////////////////
+        bzero(test, 1024);
+        read(client_socket, test, 1024);
+        strcpy(newInput, test);
+        bzero(test, 1024);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////
+        //scanf("%s", newInput);
         printf("\n");
 
         // checks if the input was "pass'
-        pass = PassCheckerForRandalph();
+        pass = PassCheckerForRandalph(client_socket);
 
         if(!pass){
             twoPasses =0;
@@ -475,7 +459,13 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
         //printf("hi");
             if(playerTacker==1)playerTacker=2;
             else playerTacker=1;
-
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            snprintf(playerTurn, 64, "It is now player %d turn\nMake a word from: ", playerTacker);
+            strcat(playerTurn, userInput);
+            strcat(test, playerTurn);
+            strcat(test, newLine);
+            bzero(playerTurn, 64);
+            ///////////////////////////////////////////////////////////////////////////////////////////////
             printf("It is now player %d turn\n", playerTacker);
 
 
@@ -495,7 +485,7 @@ void randAlphabetPicker(){  // pick random char at start of the game and random 
 
 
 //multiplayer
-void MainGameLoop(int client_socket){
+void MainGameLoop(){
     bool cont = true;
     bool one = false;
     bool two = true;
@@ -503,7 +493,7 @@ void MainGameLoop(int client_socket){
     bool twopass = false;
 
     printf("Your set of alphabets is %s\n", userInput);
-    randAlphabetPicker(); //starts game
+    randAlphabetPicker(0); //starts game
 
     while(cont){
 /* not done yet
@@ -528,7 +518,7 @@ void MainGameLoop(int client_socket){
         printf("\n");
 
         // checks if the input was "pass'
-        twopass = passCheck(client_socket);
+        twopass = passCheck(0);
 
         // checks for two passes in a row becuase if there are then you need to pick another random alph
         if(twopass==false){
@@ -565,12 +555,12 @@ void MainGameLoop(int client_socket){
     }
 }
 
+
 //checks if a word has been used before.
 bool checkIfWordUsed(){
     int len =0;
     //used for server
     char serverWords[64];
-
     len = sizeof(usedWords)/sizeof(usedWords[0]);
 
     for(int i =0; i<len; i++){
@@ -655,14 +645,13 @@ bool wordInTextFileCheck(){
 // checks for passing in main loop
 bool passCheck(int client_socket){
     int count = 0;
-    //used in server
     char serverWords[64];
     char pass[4]= {'p','a','s','s'};
     for(int i=0; i <4; i++){// for passing
         if(newInput[i]==pass[i]){
             count++;
             if(count ==4){
-                //server test/////////////////////////////////////
+                 //server test/////////////////////////////////////
                 strcpy(serverWords, "Passing to the other player.");
                 strcat(test, serverWords);
                 strcat(test, newLine);
@@ -687,7 +676,7 @@ bool passCheck(int client_socket){
                         randAlphabetPickerSinglePlayer(client_socket);
                     }
                     else{
-                        randAlphabetPicker();
+                        randAlphabetPicker(0);
                     }
                     return true;
                 }
@@ -714,10 +703,29 @@ void menu(){
     }
 }
 
+//gets aphlabet from txt
+void getWordFromTxt(){
+    //gets random input file in form "input_xx.txt"
+    file = randomInputFile();
+    ///////////////////////////////////////////////////////
+    strcat(test, "Using game file: ");
+    strcat(test, file);
+    strcat(test, newLine);
+    /////////////////////////////////////////////////////
+    printf("Using game file: %s\n", file);
+    inputFile = fopen(file, "r");
 
+    //gets word to play from input file and inputs it into playText
+    fgets(userInput, playTextLength, inputFile);
+
+    for(int i=0; i<strlen(userInput); i++){
+        alphabets[i]=userInput[i];
+    }
+    fclose(inputFile);
+}
 
 //pass checker for rand alph.    this one is different becuase it has to check for 4 passes to end game
-bool PassCheckerForRandalph(){
+bool PassCheckerForRandalph(int client_socket){
     int count = 0;
     char pass[4]= {'p','a','s','s'};
     //used for server
@@ -733,6 +741,7 @@ bool PassCheckerForRandalph(){
                 strcat(test, newLine);
                 bzero(serverWords, 64);
                 /////////////////////////////////////////////////
+                //prints to server side
                 printf("passing to other player\n");
                 i = 10;
                 twoPasses++;
@@ -764,7 +773,10 @@ bool PassCheckerForRandalph(){
     return false;
 }
 
-void winner(){
+void winner(int client_socket){
+
+    char serverWords[64];
+
     if(menuOp==2){
         if(score[1]>score[2]){
             printf("Player1 Wins");
@@ -783,21 +795,39 @@ void winner(){
 
     if(menuOp==1){
         if(score[1]>score[2]){
+            //server test/////////////////////////////////////
+            strcpy(serverWords, "You won.");
+            strcat(test, serverWords);
+            strcat(test, newLine);
+            bzero(serverWords, 64);
+            /////////////////////////////////////////////////
             printf("You Won");
             player1WonLoss=1;
     }
         else if (score[2]>score[1]){
+            //server test/////////////////////////////////////
+            strcpy(serverWords, "Server wins.");
+            strcat(test, serverWords);
+            strcat(test, newLine);
+            bzero(serverWords, 64);
+            /////////////////////////////////////////////////
             printf("Server Wins");
             player1WonLoss=0;
         }
         else{
+            //server test/////////////////////////////////////
+            strcpy(serverWords, "You tied.");
+            strcat(test, serverWords);
+            strcat(test, newLine);
+            bzero(serverWords, 64);
+            /////////////////////////////////////////////////
             printf("You tied");
         }
     }
 
     if(menuOp==1){
 
-    readScoreSinglePlayer();
+    readScoreSinglePlayer(client_socket);
 
     }
     else if(menuOp==2){
