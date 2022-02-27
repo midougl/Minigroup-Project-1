@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include<sys/wait.h>
+#include <sys/wait.h>
 #include <time.h>
 #include "server_main.h"
 
@@ -414,14 +414,21 @@ void readScoreSinglePlayer(int client_socket){
     }
 
     fclose(filesc);
-
+    read(client_socket, test, 1024);
 
     // wait for use to hit the enter key
     while(true){
-        if (getchar() == '\n') {
+        if (strcmp(test, "dc") == 0) {
             break;
         }
+        bzero(test, 1024);
+        strcpy(test, "click dc to continue");
+        write(client_socket, test, 1024);
+        bzero(test, 1024);
+        read(client_socket, test, 1024);
     }
-    main();
+
+
+    menuOp = 0;
 
 }
