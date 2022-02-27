@@ -238,7 +238,7 @@ void readScore(){
 }
 
 
-void readScoreSinglePlayer(){
+void readScoreSinglePlayer(int client_socket){
 
     FILE *filesc = fopen("singlePlayer.txt", "r+");
     char *header = "First name	Last name	Country Score	Score   Win/lose     Number of Words Found 	Number of Words Added In The Dictionary ";
@@ -299,17 +299,59 @@ void readScoreSinglePlayer(){
     int whereToStart=0;
     whereToStart = 5-whatplace1;
     int n =0;
+    
+    //for server
+    char serverWords[64];
 
     // if we do need to be on the board this is were it starts
     if(needToAdd1==1){
 
         // gets info from player
+        //server test first name/////////////////////////////////////
+        strcpy(serverWords, "You write first name ");
+        strcat(test, serverWords);
+        strcat(test, newLine);
+        bzero(serverWords, 64);
+        /////////////////////////////////////////////////
+        //print server side
          printf("Please enter first name\n");
-         scanf("%s", firstName);
-         printf("Please enter last name\n");
-         scanf("%s", lastName);
+
+         write(client_socket, test, strlen(test));
+         bzero(test, 1024);
+         read(client_socket, test, 1024);
+         strcpy(firstName, test);
+         bzero(test, 1024);
+         //scanf("%s", firstName);
+
+
+         //server test last name/////////////////////////////////////
+        strcpy(serverWords, "You write last name ");
+        strcat(test, serverWords);
+        strcat(test, newLine);
+        bzero(serverWords, 64);
+        /////////////////////////////////////////////////
+        printf("Please enter last name\n");
+         write(client_socket, test, strlen(test));
+         bzero(test, 1024);
+         read(client_socket, test, 1024);
+         strcpy(lastName, test);
+         bzero(test, 1024);
+         
+         //scanf("%s", lastName);
+          //server test last name/////////////////////////////////////
+        strcpy(serverWords, "Please enter country ");
+        strcat(test, serverWords);
+        strcat(test, newLine);
+        bzero(serverWords, 64);
+        /////////////////////////////////////////////////
          printf("Please enter country\n");
-         scanf("%s", Enteredcountry);
+         write(client_socket, test, strlen(test));
+         bzero(test, 1024);
+         read(client_socket, test, 1024);
+         strcpy(Enteredcountry, test);
+         bzero(test, 1024);
+        
+         //scanf("%s", Enteredcountry);
 
         //sets the print out for the score if the player won or lost the game
          if(player1WonLoss==1){
@@ -343,6 +385,31 @@ void readScoreSinglePlayer(){
     // shows the scoreboard to the user
     printf("\n");
     for(int i=0; i<5;i++){
+        //SERVER SIDE//////////////////////////////////////
+        strcat(test, first[i]);
+        strcat(test, " ");
+        strcat(test, last[i]);
+        strcat(test, " ");
+        strcat(test, country[i]);
+        strcat(test, " ");
+        snprintf(serverWords, 64, "%d ", scoreb[i]);
+        strcat(test, serverWords);
+        bzero(serverWords, 64);
+        strcat(test, " ");
+        strcat(test, win[i]);
+        strcat(test, " ");
+        snprintf(serverWords, 64, "%d ", found[i]);
+        strcat(test, serverWords);
+        bzero(serverWords, 64);
+        strcat(test, " ");
+        snprintf(serverWords, 64, "%d ", added[i]);
+        strcat(test, serverWords);
+        bzero(serverWords, 64);
+        strcat(test, " ");
+        strcat(test, newLine);
+        write(client_socket, test, strlen(test));
+        bzero(test, 1024);
+        //////////////////////////////////////////////////
         printf("%s %s %s %d %s %d %d\n" , first[i], last[i], country[i], scoreb[i], win[i], found[i], added[i]);
     }
 
