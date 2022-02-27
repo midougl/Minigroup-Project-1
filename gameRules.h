@@ -81,6 +81,9 @@ void getWordFromTxt(){
 
 
 void randAlphabetPickerSinglePlayer(int client_socket){  // for single player
+    //IN CASE IT IS NOT EMPTY
+    bzero(test, 1024);
+
     int ranChar =0;
     int lengthOfWord =0;
     bool pass = false;
@@ -760,6 +763,7 @@ void menu(){
 bool PassCheckerForRandalph(){
     int count = 0;
     char pass[4]= {'p','a','s','s'};
+    //used for server
     char serverWords[64];
 
     for(int i=0; i <4; i++){// for passing
